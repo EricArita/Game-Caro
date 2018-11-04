@@ -1,7 +1,11 @@
 #include "MainScreen.h"
 #include "Windows.h"
 #include "Graphics.h"
+#include <iostream>
+#include <string>
 #include <stdio.h>
+#include <conio.h>
+using namespace std;
 
 MainScreen::MainScreen() {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -9,16 +13,19 @@ MainScreen::MainScreen() {
 
 	ScreenColumns = csbi.srWindow.Right - csbi.srWindow.Left + 1; 
 	ScreenRows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1; 
+
+	Graphics::HideCursor(false);
 }
 
 void MainScreen::PrintTitle(){
-	int initX = (ScreenColumns - 74) / 2 + 8;
-	int initY = 6;
+	int initX = (ScreenColumns - 74) / 2 + 8; //coordinate X to start printing title
+	int initY = 6; //coordinate Y to start printing title
+	Graphics::SetColor(10);
 
 	/*
 		print 'C'
 	*/
-	Sleep(900);
+	Sleep(800);
 
 	Graphics::gotoXY(initX, initY);
 	printf_s("CCCCCCCCCCCCC");
@@ -169,9 +176,68 @@ void MainScreen::PrintTitle(){
 	printf_s("ooooooooooo");
 }
 
-void MainScreen::ProcessMenu(){
-	
+void MainScreen::PrintMenu(int index, int type) {
+	string submenu[6];
 
-	//Graphics::gotoXY(srColumns / 2, srRows / 2);
-	//printf_s("%d %d", columns, rows);
+	switch (type)	
+	{
+		case 1: //MainMenu
+			submenu[0] = "New Game";
+			submenu[1] = "Load Game";
+			submenu[2] = "Options";
+			submenu[3] = "Help";
+			submenu[4] = "About";
+			submenu[5] = "Exit";
+			break;
+		case 2: //Options
+			break;
+	}
+	
+	int initX = ScreenColumns / 2;
+	int initY = ScreenRows / 2;
+
+	for (int i = 0; i < 6; i++) {
+		Graphics::gotoXY(initX, initY + 4 + 2 * i);
+
+		if (i == index)
+			Graphics::SetColor(12);
+		else
+			Graphics::SetColor(14);
+
+		cout << submenu[i];
+	}
+}
+
+void MainScreen::MenuProcessing(){
+	this->PrintMenu(0, 1);
+
+	int currSubmenu = 0;
+	while (true) {
+		if (_kbhit()) {
+			if (GetAsyncKeyState(VK_DOWN)){
+				currSubmenu++;
+				if (currSubmenu == 6)
+					currSubmenu = 0;
+				this->PrintMenu(currSubmenu, 1);
+				Sleep(200);
+				continue;
+			}
+			
+			if (GetAsyncKeyState(VK_UP)) {
+				currSubmenu--;
+				if (currSubmenu == -1)
+					currSubmenu = 5;
+				this->PrintMenu(currSubmenu, 1);
+				Sleep(200);
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_RETURN)) {
+				if (currSubmenu == 5) { //exit
+					return;
+				}
+			}
+		}
+		
+	}
 }

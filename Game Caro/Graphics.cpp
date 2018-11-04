@@ -17,3 +17,10 @@ void Graphics::InitializeComponent() {
 void Graphics::SetColor(int i){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), i);
 }
+
+void Graphics::HideCursor(bool visible) {
+	CONSOLE_CURSOR_INFO infoCursor;
+	infoCursor.bVisible = visible;
+	infoCursor.dwSize = 10;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &infoCursor);
+}

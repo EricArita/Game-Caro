@@ -151,13 +151,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CellofBoard.h" />
     <ClInclude Include="ChessBoard.h" />
-    <ClInclude Include="CPoint.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="MainScreen.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game Caro.cpp" />
+    <ClCompile Include="ChessBoard.cpp" />
+    <ClCompile Include="MainProgram.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="MainScreen.cpp" />
   </ItemGroup>
