@@ -78,10 +78,12 @@ void ChessBoard::setStateOfBoard(int CursorX, int CursorY, int turn) {
 				if (turn == 1) {
 					pBoard[i][j].setChessMan('X');
 					printf_s("X");
+					return;
 				}
 				else {
 					pBoard[i][j].setChessMan('O');
 					printf_s("O");
+					return;
 				}
 			}
 		}

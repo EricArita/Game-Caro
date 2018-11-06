@@ -9,5 +9,5 @@ class MainScreen{
 	public:
 		MainScreen();
 		void PrintTitle();
-		void MenuProcessing();
+		int MenuProcessing();
 };

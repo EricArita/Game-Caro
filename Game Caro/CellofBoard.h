@@ -2,7 +2,7 @@
 
 class CellofBoard {
 	private:
-		int x, y;
+		int x, y; //coordinate of upper left corner of each cell in board
 		char ChessMan;
 	public:
 		CellofBoard() {

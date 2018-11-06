@@ -1,6 +1,7 @@
 #include "MainScreen.h"
 #include "Windows.h"
 #include "Graphics.h"
+#include "BattleScreen.h"
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -8,11 +9,9 @@
 using namespace std;
 
 MainScreen::MainScreen() {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-
-	ScreenColumns = csbi.srWindow.Right - csbi.srWindow.Left + 1; 
-	ScreenRows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1; 
+	Graphics::getConsoleScreenSize();
+	ScreenColumns = Graphics::ConsoleScreenColumns;
+	ScreenRows = Graphics::ConsoleScreenRows;
 
 	Graphics::HideCursor(false);
 }
@@ -208,7 +207,7 @@ void MainScreen::PrintMenu(int index, int type) {
 	}
 }
 
-void MainScreen::MenuProcessing(){
+int MainScreen::MenuProcessing(){
 	this->PrintMenu(0, 1);
 
 	int currSubmenu = 0;
@@ -233,8 +232,14 @@ void MainScreen::MenuProcessing(){
 			}
 
 			if (GetAsyncKeyState(VK_RETURN)) {
-				if (currSubmenu == 5) { //exit
-					return;
+				if (currSubmenu == 0) { //New Game
+					system("cls");
+					return 0;
+				}
+
+				if (currSubmenu == 5) { //Exit
+					system("cls");
+					return 5;
 				}
 			}
 		}

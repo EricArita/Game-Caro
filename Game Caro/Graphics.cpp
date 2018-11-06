@@ -1,6 +1,9 @@
 #include "Graphics.h"
 #include "windows.h"
 
+int Graphics::ConsoleScreenColumns = 0;
+int Graphics::ConsoleScreenRows = 0;
+
 void Graphics::gotoXY(int x, int y) {
 	COORD coord;
 	coord.X = x;
@@ -24,3 +27,13 @@ void Graphics::HideCursor(bool visible) {
 	infoCursor.dwSize = 10;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &infoCursor);
 }
+
+void Graphics::getConsoleScreenSize(void) {
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+	ConsoleScreenColumns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	ConsoleScreenRows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
+	

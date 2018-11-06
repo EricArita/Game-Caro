@@ -7,11 +7,9 @@ class ChessBoard {
 		int UpperLeftCornerX, UpperLeftCornerY;
 		CellofBoard** pBoard;
 	public:
-		int getSize();
-		int getUpperLeftCornerX();
-		int getUpperLeftCornerY();
-		int getXAt(int, int);
-		int getYAt(int, int);
+		int getSize() { return size; };
+		int getUpperLeftCornerX() { return UpperLeftCornerX; };
+		int getUpperLeftCornerY() { return UpperLeftCornerY; };
 	public:
 		ChessBoard(int, int, int);
 		~ChessBoard();
