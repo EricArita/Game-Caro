@@ -6,7 +6,7 @@
 GameCaro::GameCaro(){
 	Graphics::InitializeComponent();
 
-	this->PriorityChessMan = 'O';
+	this->PriorityChessMan = 'X';
 
 	MainScreen* scMain = new MainScreen();
 	scMain->PrintTitle();
@@ -16,6 +16,7 @@ GameCaro::GameCaro(){
 		BattleScreen* scrBattle = new BattleScreen(20); //Size of chessboard is 20x20
 		scrBattle->drawGUI();
 		scrBattle->startGame();
+		scrBattle->finishGame();
 	}
 	else if (typeSubMenu == 5) { //Exit
 		return;

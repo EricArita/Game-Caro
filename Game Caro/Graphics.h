@@ -1,4 +1,6 @@
 #pragma once
+#include<iostream>
+using namespace std;
 
 class Graphics {
 	public:
@@ -9,5 +11,6 @@ class Graphics {
 		static void SetColor(int);
 		static void gotoXY(int, int);
 		static void HideCursor(bool);
+		static void Blink(int, int, string);
 		static void getConsoleScreenSize();
 };

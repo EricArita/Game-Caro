@@ -6,14 +6,20 @@ class BattleScreen {
 		ChessBoard* board;
 		int ScreenColumns;
 		int ScreenRows;
+		int CurrCursorX;
+		int CurrCursorY;
 		bool Stop;
-		int Result;
-		int Turn;
+		char Result;
+		char Turn;
 	private:
 		void startCLock();
-		bool checkCurrentState();
+		void changeTurn();
+		void getControlFromPlayer();
+		//void getControlFromComputer(); // update later
+		void checkCurrentState();
 	public:
 		BattleScreen(int);
 		void drawGUI();
-		void startGame();		
+		void startGame();
+		void finishGame();
 };

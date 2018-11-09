@@ -1,5 +1,7 @@
 #include "Graphics.h"
 #include "windows.h"
+#include<string>
+using namespace std;
 
 int Graphics::ConsoleScreenColumns = 0;
 int Graphics::ConsoleScreenRows = 0;
@@ -12,8 +14,6 @@ void Graphics::gotoXY(int x, int y) {
 }
 
 void Graphics::InitializeComponent() {
-	//HWND consoleWindow = GetConsoleWindow();
-	//SetWindowLong(consoleWindow, GWL_STYLE, GetWindowLong(consoleWindow, GWL_STYLE) & ~WS_MINIMIZEBOX);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 }
 
@@ -26,6 +26,25 @@ void Graphics::HideCursor(bool visible) {
 	infoCursor.bVisible = visible;
 	infoCursor.dwSize = 10;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &infoCursor);
+}
+
+void Graphics::Blink(int x, int y, string content) {
+	for (int i = 1; i <= 4; i++) {
+		Graphics::gotoXY(x, y);
+
+		if(i == 1)
+			Graphics::SetColor(10);
+		else if (i == 2)
+			Graphics::SetColor(12);
+		else if (i == 3)
+			Graphics::SetColor(13);
+		else if (i == 4)
+			Graphics::SetColor(14);
+
+		cout << content;
+		Sleep(200);
+	}
+
 }
 
 void Graphics::getConsoleScreenSize(void) {

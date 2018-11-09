@@ -6,6 +6,7 @@ ChessBoard::ChessBoard(int size, int x, int y) {
 	this->size = size;
 	this->UpperLeftCornerX = x;
 	this->UpperLeftCornerY = y;
+	this->AmountChessMan = 0;
 	pBoard = new CellofBoard*[size];
 
 	for (int i = 0; i < size; i++)
@@ -27,6 +28,7 @@ void ChessBoard::resetBoard() {
 			pBoard[i][j].setY(UpperLeftCornerY + 2 * i);
 			pBoard[i][j].setChessMan(' ');
 		}
+	AmountChessMan = 0;
 }
 
 void ChessBoard::drawBoard() {
@@ -63,7 +65,7 @@ void ChessBoard::drawBoard() {
 	printf_s("%c%c%c%c", 196, 196, 196, 217);
 }
 
-void ChessBoard::setStateOfBoard(int CursorX, int CursorY, int turn) {
+bool ChessBoard::setStateOfBoard(int CursorX, int CursorY, char turn) {
 	for(int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
 			int x1 = pBoard[i][j].getX();
@@ -74,16 +76,20 @@ void ChessBoard::setStateOfBoard(int CursorX, int CursorY, int turn) {
 
 			if (x1 < CursorX && CursorX < x2 && y1 < CursorY && CursorY < y2) {
 				if (ChessMan != ' ')
-					return;
-				if (turn == 1) {
+					return false;
+				if (turn == 'X') {
 					pBoard[i][j].setChessMan('X');
+					Graphics::SetColor(10);
 					printf_s("X");
-					return;
+					AmountChessMan++;
+					return true;
 				}
 				else {
 					pBoard[i][j].setChessMan('O');
+					Graphics::SetColor(12);
 					printf_s("O");
-					return;
+					AmountChessMan++;
+					return true; 
 				}
 			}
 		}
