@@ -29,22 +29,21 @@ void Graphics::HideCursor(bool visible) {
 }
 
 void Graphics::Blink(int x, int y, string content) {
-	for (int i = 1; i <= 4; i++) {
-		Graphics::gotoXY(x, y);
+		for (int i = 1; i <= 4; i++) {
+			Graphics::gotoXY(x, y);
 
-		if(i == 1)
-			Graphics::SetColor(10);
-		else if (i == 2)
-			Graphics::SetColor(12);
-		else if (i == 3)
-			Graphics::SetColor(13);
-		else if (i == 4)
-			Graphics::SetColor(14);
+			if (i == 1)
+				Graphics::SetColor(10);
+			else if (i == 2)
+				Graphics::SetColor(12);
+			else if (i == 3)
+				Graphics::SetColor(13);
+			else if (i == 4)
+				Graphics::SetColor(14);
 
-		cout << content;
-		Sleep(200);
-	}
-
+			cout << content;
+			Sleep(200);
+		}
 }
 
 void Graphics::getConsoleScreenSize(void) {

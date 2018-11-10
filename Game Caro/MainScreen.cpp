@@ -12,8 +12,9 @@ MainScreen::MainScreen() {
 	Graphics::getConsoleScreenSize();
 	ScreenColumns = Graphics::ConsoleScreenColumns;
 	ScreenRows = Graphics::ConsoleScreenRows;
-
 	Graphics::HideCursor(false);
+
+
 }
 
 void MainScreen::PrintTitle(){

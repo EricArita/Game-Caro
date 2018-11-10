@@ -70,13 +70,14 @@ bool ChessBoard::setStateOfBoard(int CursorX, int CursorY, char turn) {
 		for (int j = 0; j < size; j++) {
 			int x1 = pBoard[i][j].getX();
 			int y1 = pBoard[i][j].getY();
-			int x2 = pBoard[i + 1][j + 1].getX();
-			int y2 = pBoard[i + 1][j + 1].getY();
-			char ChessMan = pBoard[i][i].getChessMan();
+			int x2 = CursorX - 2;
+			int y2 = CursorY - 1;
+			char ChessMan = pBoard[i][j].getChessMan();
 
-			if (x1 < CursorX && CursorX < x2 && y1 < CursorY && CursorY < y2) {
+			if (x1 == x2 && y1 == y2) {
 				if (ChessMan != ' ')
 					return false;
+
 				if (turn == 'X') {
 					pBoard[i][j].setChessMan('X');
 					Graphics::SetColor(10);

@@ -3,7 +3,9 @@
 #include "Windows.h"
 #include <conio.h>
 #include <stdio.h>
+#include <thread>
 #include <iostream>
+#include <string>
 using namespace std;
 
 BattleScreen::BattleScreen(int ChessBoardSize) {
@@ -13,64 +15,67 @@ BattleScreen::BattleScreen(int ChessBoardSize) {
 
 	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 8;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
+	this->Loop = false;
 }
 
 void BattleScreen::drawGUI() {
 	Graphics::SetColor(14);
 
-	for (int i = 0; i < ScreenColumns; i++) {
-		if (i == 0)
-			printf_s("%c", 201);
-		else if (i == ScreenColumns - 1)
-			printf_s("%c", 187);
-		else if (i == ScreenColumns - 40)
-			printf_s("%c", 203);
-		else
-			printf_s("%c", 205);
-		Sleep(4);
-	}
+	if (!this->Loop) {
+		for (int i = 0; i < ScreenColumns; i++) {
+			if (i == 0)
+				printf_s("%c", 201);
+			else if (i == ScreenColumns - 1)
+				printf_s("%c", 187);
+			else if (i == ScreenColumns - 40)
+				printf_s("%c", 203);
+			else
+				printf_s("%c", 205);
+			Sleep(4);
+		}
 
-	for (int i = ScreenColumns - 2; i >= 0; i--) {
-		Graphics::gotoXY(i, ScreenRows - 1);
-		if (i == 0)
-			printf_s("%c", 200);
-		else if (i == ScreenColumns - 40)
-			printf_s("%c", 202);
-		else
-			printf_s("%c", 205);
-		Sleep(4);
-	}
+		for (int i = ScreenColumns - 2; i >= 0; i--) {
+			Graphics::gotoXY(i, ScreenRows - 1);
+			if (i == 0)
+				printf_s("%c", 200);
+			else if (i == ScreenColumns - 40)
+				printf_s("%c", 202);
+			else
+				printf_s("%c", 205);
+			Sleep(4);
+		}
 
-	for (int i = 1; i < ScreenRows; i++) {
-		Graphics::gotoXY(ScreenColumns - 1, i);
-		if (i == ScreenRows - 1)
-			printf_s("%c", 188);
-		else if (i == 10)
-			printf_s("%c", 185);
-		else
+		for (int i = 1; i < ScreenRows; i++) {
+			Graphics::gotoXY(ScreenColumns - 1, i);
+			if (i == ScreenRows - 1)
+				printf_s("%c", 188);
+			else if (i == 10)
+				printf_s("%c", 185);
+			else
+				printf_s("%c", 186);
+			Sleep(4);
+		}
+
+		for (int i = ScreenRows - 2; i > 0; i--) {
+			Graphics::gotoXY(0, i);
 			printf_s("%c", 186);
-		Sleep(4);
-	}
+			Sleep(4);
+		}
 
-	for (int i = ScreenRows - 2; i > 0; i--) {
-		Graphics::gotoXY(0, i);
-		printf_s("%c", 186);
-		Sleep(4);
-	}
+		for (int i = 1; i < ScreenRows - 1; i++) {
+			Graphics::gotoXY(ScreenColumns - 40, i);
+			if (i == 10)
+				printf_s("%c", 204);
+			else
+				printf_s("%c", 186);
+			Sleep(5);
+		}
 
-	for (int i = 1; i < ScreenRows - 1; i++) {
-		Graphics::gotoXY(ScreenColumns - 40, i);
-		if (i == 10)
-			printf_s("%c", 204);
-		else
-			printf_s("%c", 186);
-		Sleep(5);
-	}
-
-	for (int i = ScreenColumns - 39; i < ScreenColumns - 1; i++) {
-		Graphics::gotoXY(i, 10);
-		printf_s("%c", 205);
-		Sleep(5);
+		for (int i = ScreenColumns - 39; i < ScreenColumns - 1; i++) {
+			Graphics::gotoXY(i, 10);
+			printf_s("%c", 205);
+			Sleep(5);
+		}
 	}
 
 	Graphics::gotoXY(ScreenColumns - 23, 12);
@@ -88,59 +93,57 @@ void BattleScreen::drawGUI() {
 	Graphics::SetColor(15);
 	Graphics::gotoXY(ScreenColumns - 28, 21);
 	cout << "X - 0  :  O - 0";
-
+	
 	board->drawBoard();
 }
 
 void BattleScreen::getControlFromPlayer() {
 	while (true)
 	{
-		if (GetAsyncKeyState(VK_UP)){
-			if (CurrCursorY - 2 > board->getUpperLeftCornerY()) {
-				CurrCursorY -= 2;
-				Graphics::gotoXY(CurrCursorX, CurrCursorY);
-			}
-			Sleep(350);
-			continue;
-		}
+			char key = _getch();
 
-		if (GetAsyncKeyState(VK_DOWN)){
-			if (CurrCursorY + 2 < board->getUpperLeftCornerY() + board->getSize() * 2) {
-				CurrCursorY += 2;
-				Graphics::gotoXY(CurrCursorX, CurrCursorY);
+			if (key == 'w' || key == 'W') {
+				if (CurrCursorY - 2 > board->getUpperLeftCornerY()) {
+					CurrCursorY -= 2;
+					Graphics::gotoXY(CurrCursorX, CurrCursorY);
+				}
+				continue;
 			}
-			Sleep(350);
-			continue;
-		}
 
-		if (GetAsyncKeyState(VK_LEFT)) {
-			if (CurrCursorX - 4 > board->getUpperLeftCornerX()) {
-				CurrCursorX -= 4;
-				Graphics::gotoXY(CurrCursorX, CurrCursorY);
+			if (key == 's' || key == 'S') {
+				if (CurrCursorY + 2 < board->getUpperLeftCornerY() + board->getSize() * 2) {
+					CurrCursorY += 2;
+					Graphics::gotoXY(CurrCursorX, CurrCursorY);
+				}
+				continue;
 			}
-			Sleep(350);
-			continue;
-		}
 
-		if (GetAsyncKeyState(VK_RIGHT)) {
-			if (CurrCursorX + 4 < board->getUpperLeftCornerX() + board->getSize() * 4) {
-				CurrCursorX += 4;
-				Graphics::gotoXY(CurrCursorX, CurrCursorY);
+			if (key == 'a' || key == 'A') {
+				if (CurrCursorX - 4 > board->getUpperLeftCornerX()) {
+					CurrCursorX -= 4;
+					Graphics::gotoXY(CurrCursorX, CurrCursorY);
+				}
+				continue;
 			}
-			Sleep(350);
-			continue;
-		}
 
-		if (GetAsyncKeyState(VK_RETURN)) {
-			if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) return;
-			Sleep(500);
-		}
+			if (key == 'd' || key == 'D') {
+				if (CurrCursorX + 4 < board->getUpperLeftCornerX() + board->getSize() * 4) {
+					CurrCursorX += 4;
+					Graphics::gotoXY(CurrCursorX, CurrCursorY);
+				}
+				continue;
+			}
+
+			if (key == VK_RETURN) { //press Enter
+				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) return;
+			}
+	
 	}
 }
 
 void BattleScreen::checkCurrentState(){
 	if (board->getAmountChessMan() == 20 * 20) {
-		this->Result = 'Draw';
+		this->Result = 'D';
 		return;
 	}
 
@@ -148,6 +151,8 @@ void BattleScreen::checkCurrentState(){
 	int currRow = -1, currColumn = -1;
 	int i, j;
 	int AmountX, AmountO;
+	char c1, c2, c3, c4, c5;
+	int t, k;
 	
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
@@ -173,25 +178,62 @@ void BattleScreen::checkCurrentState(){
 
 	while (j + 4 > n - 1) j--;
 
-	board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i, j + 1) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i, j + 2) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i, j + 3) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i, j + 4) == 'X' ? AmountX++ : AmountO++;
+	c1 = board->getChessManAtCell(i, j);
+	c2 = board->getChessManAtCell(i, j + 1);
+	c3 = board->getChessManAtCell(i, j + 2);
+	c4 = board->getChessManAtCell(i, j + 3);
+	c5 = board->getChessManAtCell(i, j + 4);
+
+	if (c1 == 'X')
+		AmountX++;
+	else if (c1 == 'O')
+		AmountO++;
+
+	if (c2 == 'X')
+		AmountX++;
+	else if (c2 == 'O')
+		AmountO++;
+
+	if (c3 == 'X')
+		AmountX++;
+	else if (c3 == 'O')
+		AmountO++;
+
+	if (c4 == 'X')
+		AmountX++;
+	else if (c4 == 'O')
+		AmountO++;
+
+	if (c5 == 'X')
+		AmountX++;
+	else if (c5 == 'O')
+		AmountO++;
+
+	t = j;
 
 	while (j >= 0 && j >= currColumn - 4) {
-		if (j != currColumn) {
-			board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-			board->getChessManAtCell(i, j + 5) == 'X' ? AmountX-- : AmountO--;
+		if (j != t) {
+			char p = board->getChessManAtCell(i, j);
+			char q = board->getChessManAtCell(i, j + 5);
+
+			if (p == 'X')
+				AmountX++;
+			else if (p == 'O')
+				AmountO++;
+
+			if (q == 'X')
+				AmountX--;
+			else if (q == 'O')
+				AmountO--;
 		}
 
 		if (AmountX == 5 || AmountO == 5) {
 			this->Stop = true;
 			
 			if (AmountX == 5)
-				this->Result = 'Win';
+				this->Result = 'W';
 			else
-				this->Result = 'Lose';
+				this->Result = 'L';
 
 			return;
 		}
@@ -208,25 +250,62 @@ void BattleScreen::checkCurrentState(){
 
 	while (i + 4 > n - 1) i--;
 
-	board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i - 1, j) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i - 2, j) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i - 3, j) == 'X' ? AmountX++ : AmountO++;
-	board->getChessManAtCell(i - 4, j) == 'X' ? AmountX++ : AmountO++;
+	c1 = board->getChessManAtCell(i, j);
+	c2 = board->getChessManAtCell(i + 1, j);
+	c3 = board->getChessManAtCell(i + 2, j);
+	c4 = board->getChessManAtCell(i + 3, j);
+	c5 = board->getChessManAtCell(i + 4, j);
+
+	if (c1 == 'X')
+		AmountX++;
+	else if (c1 == 'O')
+		AmountO++;
+
+	if (c2 == 'X')
+		AmountX++;
+	else if (c2 == 'O')
+		AmountO++;
+
+	if (c3 == 'X')
+		AmountX++;
+	else if (c3 == 'O')
+		AmountO++;
+
+	if (c4 == 'X')
+		AmountX++;
+	else if (c4 == 'O')
+		AmountO++;
+
+	if (c5 == 'X')
+		AmountX++;
+	else if (c5 == 'O')
+		AmountO++;
+
+	t = i;
 
 	while (i >= 0 && i >= currRow - 4) {
-		if (i != currRow) {
-			board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-			board->getChessManAtCell(i + 5, j) == 'X' ? AmountX-- : AmountO--;
+		if (i != t) {
+			char p = board->getChessManAtCell(i, j);
+			char q = board->getChessManAtCell(i + 5, j);
+
+			if (p == 'X')
+				AmountX++;
+			else if (p == 'O')
+				AmountO++;
+
+			if (q == 'X')
+				AmountX--;
+			else if (q == 'O')
+				AmountO--;
 		}
 
 		if (AmountX == 5 || AmountO == 5) {
 			this->Stop = true;
 
 			if (AmountX == 5)
-				this->Result = 'Win';
+				this->Result = 'W';
 			else
-				this->Result = 'Lose';
+				this->Result = 'L';
 
 			return;
 		}
@@ -247,25 +326,63 @@ void BattleScreen::checkCurrentState(){
 	}
 
 	if (i >= 0 && j >= 0) {
-		board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i + 1, j + 1) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i + 2, j + 2) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i + 3, j + 3) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i + 4, j + 4) == 'X' ? AmountX++ : AmountO++;
+		c1 = board->getChessManAtCell(i, j);
+		c2 = board->getChessManAtCell(i + 1, j + 1);
+		c3 = board->getChessManAtCell(i + 2, j + 2);
+		c4 = board->getChessManAtCell(i + 3, j + 3);
+		c5 = board->getChessManAtCell(i + 4, j + 4);
+
+		if (c1 == 'X')
+			AmountX++;
+		else if (c1 == 'O')
+			AmountO++;
+
+		if (c2 == 'X')
+			AmountX++;
+		else if (c2 == 'O')
+			AmountO++;
+
+		if (c3 == 'X')
+			AmountX++;
+		else if (c3 == 'O')
+			AmountO++;
+
+		if (c4 == 'X')
+			AmountX++;
+		else if (c4 == 'O')
+			AmountO++;
+
+		if (c5 == 'X')
+			AmountX++;
+		else if (c5 == 'O')
+			AmountO++;
+
+		t = i;
+		k = j;
 
 		while (i >= 0 && j >= 0 && i >= currRow - 4 && j >= currColumn - 4) {
-			if ( i != currRow && j != currColumn) {
-				board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-				board->getChessManAtCell(i + 5, j + 5) == 'X' ? AmountX-- : AmountO--;
+			if ( i != t && j != k) {
+				char p = board->getChessManAtCell(i, j);
+				char q = board->getChessManAtCell(i + 5, j + 5);
+
+				if (p == 'X')
+					AmountX++;
+				else if (p == 'O')
+					AmountO++;
+
+				if (q == 'X')
+					AmountX--;
+				else if (q == 'O')
+					AmountO--;
 			}
 
 			if (AmountX == 5 || AmountO == 5) {
 				this->Stop = true;
 
 				if (AmountX == 5)
-					this->Result = 'Win';
+					this->Result = 'W';
 				else
-					this->Result = 'Lose';
+					this->Result = 'L';
 
 				return;
 			}
@@ -288,25 +405,63 @@ void BattleScreen::checkCurrentState(){
 	}
 
 	if (i >= 0 && j >= 0) {
-		board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i - 1, j + 1) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i - 2, j + 2) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i - 3, j + 3) == 'X' ? AmountX++ : AmountO++;
-		board->getChessManAtCell(i - 4, j + 4) == 'X' ? AmountX++ : AmountO++;
+		c1 = board->getChessManAtCell(i, j);
+		c2 = board->getChessManAtCell(i + 1, j - 1);
+		c3 = board->getChessManAtCell(i + 2, j - 2);
+		c4 = board->getChessManAtCell(i + 3, j - 3);
+		c5 = board->getChessManAtCell(i + 4, j - 4);
+
+		if (c1 == 'X')
+			AmountX++;
+		else if (c1 == 'O')
+			AmountO++;
+
+		if (c2 == 'X')
+			AmountX++;
+		else if (c2 == 'O')
+			AmountO++;
+
+		if (c3 == 'X')
+			AmountX++;
+		else if (c3 == 'O')
+			AmountO++;
+
+		if (c4 == 'X')
+			AmountX++;
+		else if (c4 == 'O')
+			AmountO++;
+
+		if (c5 == 'X')
+			AmountX++;
+		else if (c5 == 'O')
+			AmountO++;
+
+		t = i;
+		k = j;
 
 		while (i >= 0 && j >= 0 && i >= currRow - 4 && j <= currColumn + 4) {
-			if (i != currRow && j != currColumn) {
-				board->getChessManAtCell(i, j) == 'X' ? AmountX++ : AmountO++;
-				board->getChessManAtCell(i + 5, j - 5) == 'X' ? AmountX-- : AmountO--;
+			if (i != t && j != k) {
+				char p = board->getChessManAtCell(i, j);
+				char q = board->getChessManAtCell(i + 5, j - 5);
+
+				if (p == 'X')
+					AmountX++;
+				else if (p == 'O')
+					AmountO++;
+
+				if (q == 'X')
+					AmountX--;
+				else if (q == 'O')
+					AmountO--;
 			}
 
 			if (AmountX == 5 || AmountO == 5) {
 				this->Stop = true;
 
 				if (AmountX == 5)
-					this->Result = 'Win';
+					this->Result = 'W';
 				else
-					this->Result = 'Lose';
+					this->Result = 'L';
 
 				return;
 			}
@@ -322,14 +477,74 @@ void BattleScreen::changeTurn() {
 	Graphics::SetColor(12);
 	
 	if (Turn == 'X') {
+		Graphics::SetColor(12);
 		cout << "O";
 		Turn = 'O';
 	}
 	else {
+		Graphics::SetColor(10);
 		cout << "X";
 		Turn = 'X';
 	}
 	Graphics::gotoXY(CurrCursorX, CurrCursorY);
+}
+
+void BattleScreen::AskPlayer() {
+	int x = board->getUpperLeftCornerX() + board->getSize() * 4 ;
+	int y = board->getUpperLeftCornerY() + 2 * 9;
+
+	string MenuAsk[2];
+	MenuAsk[0] = "---> YES";
+	MenuAsk[1] = "---> NO";
+
+	Graphics::gotoXY(x + 6, y);
+	Graphics::SetColor(9);
+	printf_s("BAN CO MUON CHOI TIEP ?");
+	
+	Graphics::gotoXY(x + 9, y + 2);
+	Graphics::SetColor(10);
+	cout << MenuAsk[0];
+	Graphics::gotoXY(x + 9, y + 4);
+	Graphics::SetColor(8);
+	cout << MenuAsk[1];
+
+	int currMenu = 0;
+	while (true)
+	{
+		if (_kbhit()) {
+			if (GetAsyncKeyState(VK_RETURN)) {
+				if (currMenu == 0)
+					Loop = true;
+				else
+					Loop = false;
+
+				this->FinishThreadAskPlayer = true;
+				return;
+			}
+
+			if (GetAsyncKeyState(VK_UP)) {
+				if (currMenu == 1)
+					currMenu = 0;
+			}
+
+			if (GetAsyncKeyState(VK_DOWN)) {
+				if (currMenu == 0)
+					currMenu = 1;
+			}
+
+			for (int i = 0; i < 2; i++) {
+				Graphics::gotoXY(x + 9, y + 2 + 2 * i);
+
+				if (i == currMenu)
+					Graphics::SetColor(10);
+				else
+					Graphics::SetColor(8);
+
+				cout << MenuAsk[i];
+			}
+		}
+		Sleep(200);
+	}
 }
 
 void BattleScreen::startGame() {
@@ -338,10 +553,11 @@ void BattleScreen::startGame() {
 	*/
 
 	while (true) { //Blinking effect
-		if (GetAsyncKeyState(VK_SPACE)) 
+
+   		if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		else 
-			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "NHAN PHIM SPACE DE BAT DAU");
+ 			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "NHAN PHIM SPACE DE BAT DAU");
 	}
 	
 	/*
@@ -371,14 +587,14 @@ void BattleScreen::startGame() {
 
 
 	board->resetBoard();
-	CurrCursorX = board->getXAtCell(10, 10) + 2;
-	CurrCursorY = board->getYAtCell(10, 10) + 1;
+	CurrCursorX = board->getXAtCell(9, 9) + 2;
+	CurrCursorY = board->getYAtCell(9, 9) + 1;
 	Graphics::gotoXY(CurrCursorX, CurrCursorY);
 
 	while (!this->Stop) //Loop until finishing the match
 	{
 		this->getControlFromPlayer();
-		//this->checkCurrentState();
+		this->checkCurrentState();
 		this->changeTurn();
 	}
 	
@@ -394,10 +610,17 @@ void BattleScreen::finishGame() {
 	for (int i = 1; i <= 7; i++)
 		printf_s(" ");
 
-	if (this->Result == 'Win')
-		Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "BAN THANG");
-	else if (this->Result == 'Draw')
-		Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "HOA");
-	else if (this->Result == 'Lose') 
-		Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "MAY THANG");
+
+	this->FinishThreadAskPlayer = false;
+	AskPlayer();
+
+	/*while (!this->FinishThreadAskPlayer) {
+		if (this->Result == 'W') 
+			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "BAN THANG");
+		else if (this->Result == 'D')
+			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "HOA");
+		else if (this->Result == 'L')
+			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "MAY THANG");
+	}*/
+
 }
