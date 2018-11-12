@@ -21,7 +21,7 @@ void Graphics::SetColor(int i){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), i);
 }
 
-void Graphics::HideCursor(bool visible) {
+void Graphics::VisibleCursor(bool visible) {
 	CONSOLE_CURSOR_INFO infoCursor;
 	infoCursor.bVisible = visible;
 	infoCursor.dwSize = 10;
@@ -33,16 +33,16 @@ void Graphics::Blink(int x, int y, string content) {
 			Graphics::gotoXY(x, y);
 
 			if (i == 1)
-				Graphics::SetColor(10);
+				Graphics::SetColor(14);
 			else if (i == 2)
 				Graphics::SetColor(12);
 			else if (i == 3)
 				Graphics::SetColor(13);
 			else if (i == 4)
-				Graphics::SetColor(14);
+				Graphics::SetColor(10);
 
 			cout << content;
-			Sleep(200);
+			Sleep(120);
 		}
 }
 

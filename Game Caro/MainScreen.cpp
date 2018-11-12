@@ -9,12 +9,11 @@
 using namespace std;
 
 MainScreen::MainScreen() {
+	system("cls");
 	Graphics::getConsoleScreenSize();
 	ScreenColumns = Graphics::ConsoleScreenColumns;
 	ScreenRows = Graphics::ConsoleScreenRows;
-	Graphics::HideCursor(false);
-
-
+	Graphics::VisibleCursor(false);
 }
 
 void MainScreen::PrintTitle(){

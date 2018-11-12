@@ -13,15 +13,15 @@ BattleScreen::BattleScreen(int ChessBoardSize) {
 	ScreenColumns = Graphics::ConsoleScreenColumns;
 	ScreenRows = Graphics::ConsoleScreenRows;
 
-	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 8;
+	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
-	this->Loop = false;
+	this->Loop = true;
 }
 
 void BattleScreen::drawGUI() {
 	Graphics::SetColor(14);
 
-	if (!this->Loop) {
+	if (this->NumberOfWinsOfComputer + this->NumberOfWinsOfPlayer == 0) {
 		for (int i = 0; i < ScreenColumns; i++) {
 			if (i == 0)
 				printf_s("%c", 201);
@@ -135,7 +135,20 @@ void BattleScreen::getControlFromPlayer() {
 			}
 
 			if (key == VK_RETURN) { //press Enter
-				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) return;
+				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) {
+					if (Turn == 'X') {
+						this->NumberOfChessManX++;
+						Graphics::gotoXY(ScreenColumns - 24, 21);
+						cout << this->NumberOfChessManX;
+					}
+					else {
+						this->NumberOfChessManO++;
+						Graphics::gotoXY(ScreenColumns - 14, 21);
+						cout << this->NumberOfChessManO;
+					}
+									
+					return;
+				}
 			}
 	
 	}
@@ -491,7 +504,7 @@ void BattleScreen::changeTurn() {
 
 void BattleScreen::AskPlayer() {
 	int x = board->getUpperLeftCornerX() + board->getSize() * 4 ;
-	int y = board->getUpperLeftCornerY() + 2 * 9;
+	int y = board->getUpperLeftCornerY() + 2 * 5;
 
 	string MenuAsk[2];
 	MenuAsk[0] = "---> YES";
@@ -511,7 +524,46 @@ void BattleScreen::AskPlayer() {
 	int currMenu = 0;
 	while (true)
 	{
+		_getch();
 		if (_kbhit()) {
+			if (GetAsyncKeyState(VK_UP)) {
+				if (currMenu == 1)
+					currMenu = 0;
+
+				for (int i = 0; i < 2; i++) {
+					Graphics::gotoXY(x + 9, y + 2 + 2 * i);
+
+					if (i == currMenu)
+						Graphics::SetColor(10);
+					else
+						Graphics::SetColor(8);
+
+					cout << MenuAsk[i];
+				}
+
+				Sleep(250);
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_DOWN)) {
+				if (currMenu == 0)
+					currMenu = 1;
+
+				for (int i = 0; i < 2; i++) {
+					Graphics::gotoXY(x + 9, y + 2 + 2 * i);
+
+					if (i == currMenu)
+						Graphics::SetColor(10);
+					else
+						Graphics::SetColor(8);
+
+					cout << MenuAsk[i];
+				}
+
+				Sleep(250);
+				continue;
+			}
+
 			if (GetAsyncKeyState(VK_RETURN)) {
 				if (currMenu == 0)
 					Loop = true;
@@ -521,57 +573,31 @@ void BattleScreen::AskPlayer() {
 				this->FinishThreadAskPlayer = true;
 				return;
 			}
-
-			if (GetAsyncKeyState(VK_UP)) {
-				if (currMenu == 1)
-					currMenu = 0;
-			}
-
-			if (GetAsyncKeyState(VK_DOWN)) {
-				if (currMenu == 0)
-					currMenu = 1;
-			}
-
-			for (int i = 0; i < 2; i++) {
-				Graphics::gotoXY(x + 9, y + 2 + 2 * i);
-
-				if (i == currMenu)
-					Graphics::SetColor(10);
-				else
-					Graphics::SetColor(8);
-
-				cout << MenuAsk[i];
-			}
 		}
-		Sleep(200);
 	}
 }
 
-void BattleScreen::startGame() {
+void BattleScreen::startBattle() {
 	/*
 		Ready for starting
 	*/
 
 	while (true) { //Blinking effect
 
-   		if (GetAsyncKeyState(VK_SPACE)) 
+    		if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		else 
- 			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "NHAN PHIM SPACE DE BAT DAU");
+ 			Graphics::Blink((ScreenColumns - 41) / 2 - 20, 3, "NHAN PHIM SPACE DE BAT DAU");
 	}
 	
 	/*
 		Starts
 	*/
 
-	/*
-		--> This feature is being developped
-		thread thrClock = new thread(startClock());
-	*/
-
 	this->Stop = false;
 	this->Result = 'N';
 	this->Turn = 'X';
+	this->NumberOfChessManX = this->NumberOfChessManO = 0;
 
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 24, 3);
 	Graphics::SetColor(13);
@@ -585,11 +611,16 @@ void BattleScreen::startGame() {
 	Graphics::SetColor(15);
 	cout << "--";
 
-
 	board->resetBoard();
+	Graphics::VisibleCursor(true);
 	CurrCursorX = board->getXAtCell(9, 9) + 2;
 	CurrCursorY = board->getYAtCell(9, 9) + 1;
 	Graphics::gotoXY(CurrCursorX, CurrCursorY);
+
+	/*
+		--> This feature is being developped
+		thread thrClock = new thread(startClock());
+	*/
 
 	while (!this->Stop) //Loop until finishing the match
 	{
@@ -601,9 +632,9 @@ void BattleScreen::startGame() {
 	return;
 }
 
-void BattleScreen::finishGame() {
+void BattleScreen::finishBattle() {
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 24, 3);
-	for(int i = 1; i <= 30; i++)
+	for (int i = 1; i <= 30; i++)
 		printf_s(" ");
 
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 12, 4);
@@ -611,16 +642,42 @@ void BattleScreen::finishGame() {
 		printf_s(" ");
 
 
-	this->FinishThreadAskPlayer = false;
-	AskPlayer();
+	Graphics::VisibleCursor(false);
 
-	/*while (!this->FinishThreadAskPlayer) {
-		if (this->Result == 'W') 
-			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "BAN THANG");
-		else if (this->Result == 'D')
-			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "HOA");
-		else if (this->Result == 'L')
-			Graphics::Blink((ScreenColumns - 41) / 2 - 24, 3, "MAY THANG");
-	}*/
+	this->FinishThreadAskPlayer = false;
+
+	thread askPlayer(&BattleScreen::AskPlayer, this);
+	askPlayer.detach();
+	askPlayer.~thread();
+	
+	Sleep(10); //The speed of main thread is faster than askPlayer thread so reducing speed
+			  //of main thread a bit before continuing for not causing collision
+
+	while (!this->FinishThreadAskPlayer) {
+		if (this->Result == 'W') {
+			Graphics::Blink((ScreenColumns - 41) / 2 - 21, 3, "YOU WIN!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 - 11, 3, "YOU WIN!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 - 1, 3, "YOU WIN!");
+			Sleep(20);
+		}
+		else if (this->Result == 'D'){
+			Graphics::Blink((ScreenColumns - 41) / 2 - 23, 3, "DRAW!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 - 14, 3, "DRAW!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 - 5, 3, "DRAW!");
+			Sleep(20);
+		}	
+		else if (this->Result == 'L') {
+			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "COMPUTER WIN!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 - 10, 3, "COMPUTER WIN!");
+			Sleep(20);
+			Graphics::Blink((ScreenColumns - 41) / 2 + 5, 3, "COMPUTER WIN!");
+			Sleep(20);
+		}
+	}
 
 }

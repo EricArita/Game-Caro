@@ -12,6 +12,10 @@ class BattleScreen {
 		char Result;
 		char Turn;
 		bool FinishThreadAskPlayer;
+		int NumberOfWinsOfPlayer;
+		int NumberOfWinsOfComputer;
+		int NumberOfChessManX;
+		int NumberOfChessManO;
 	private:
 		void startCLock();
 		void changeTurn();
@@ -23,6 +27,6 @@ class BattleScreen {
 	    bool Loop;
 		BattleScreen(int);
 		void drawGUI();
-		void startGame();
-		void finishGame();
+		void startBattle();
+		void finishBattle();
 };

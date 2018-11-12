@@ -10,7 +10,7 @@ class Graphics {
 		static void InitializeComponent();
 		static void SetColor(int);
 		static void gotoXY(int, int);
-		static void HideCursor(bool);
+		static void VisibleCursor(bool);
 		static void Blink(int, int, string);
 		static void getConsoleScreenSize();
 };
