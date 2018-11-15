@@ -27,7 +27,9 @@ void ChessBoard::resetBoard() {
 			pBoard[i][j].setX(UpperLeftCornerX + 4 * j);
 			pBoard[i][j].setY(UpperLeftCornerY + 2 * i);
 			pBoard[i][j].setChessMan(' ');
-		}
+			Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
+			printf_s(" ");
+		} 
 	AmountChessMan = 0;
 }
 

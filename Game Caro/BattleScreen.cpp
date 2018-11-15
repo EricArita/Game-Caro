@@ -16,12 +16,16 @@ BattleScreen::BattleScreen(int ChessBoardSize) {
 	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
 	this->Loop = true;
+	this->NumberOfWinsOfComputer = this->NumberOfWinsOfPlayer = 0;
 }
 
 void BattleScreen::drawGUI() {
 	Graphics::SetColor(14);
 
 	if (this->NumberOfWinsOfComputer + this->NumberOfWinsOfPlayer == 0) {
+		/*
+			Draw frame
+		*/
 		for (int i = 0; i < ScreenColumns; i++) {
 			if (i == 0)
 				printf_s("%c", 201);
@@ -49,7 +53,7 @@ void BattleScreen::drawGUI() {
 			Graphics::gotoXY(ScreenColumns - 1, i);
 			if (i == ScreenRows - 1)
 				printf_s("%c", 188);
-			else if (i == 10)
+			else if (i == 10 || i == 24)
 				printf_s("%c", 185);
 			else
 				printf_s("%c", 186);
@@ -64,7 +68,7 @@ void BattleScreen::drawGUI() {
 
 		for (int i = 1; i < ScreenRows - 1; i++) {
 			Graphics::gotoXY(ScreenColumns - 40, i);
-			if (i == 10)
+			if (i == 10 || i == 24)
 				printf_s("%c", 204);
 			else
 				printf_s("%c", 186);
@@ -75,24 +79,60 @@ void BattleScreen::drawGUI() {
 			Graphics::gotoXY(i, 10);
 			printf_s("%c", 205);
 			Sleep(5);
+
+			Graphics::gotoXY(i, 24);
+			printf_s("%c", 205);
+			Sleep(5);
 		}
+
+		/*
+			print score
+		*/
+		Graphics::gotoXY(ScreenColumns - 23, 12);
+		Graphics::SetColor(13);
+		cout << "Ti so";
+		Graphics::SetColor(15);
+		Graphics::gotoXY(ScreenColumns - 27, 14);
+		cout << "P1         P2"; // 9 blank space
+		Graphics::gotoXY(ScreenColumns - 27, 15);
+		cout << "0     :    0";
+
+		/*
+			print list of utility keys
+		*/
+
+		Graphics::SetColor(2);
+		Graphics::gotoXY(ScreenColumns - 37, 26);
+		cout << "Press key 1 to restart the match";
+		Graphics::gotoXY(ScreenColumns - 37, 28);
+		cout << "Press key 2 to Save Game";
+		Graphics::gotoXY(ScreenColumns - 37, 30);
+		cout << "Press Backspace to return Main Menu";
+		Graphics::gotoXY(ScreenColumns - 37, 32);
+		cout << "Press ESC to exit game";
 	}
 
-	Graphics::gotoXY(ScreenColumns - 23, 12);
-	Graphics::SetColor(13);
-	cout << "Ti so";
-	Graphics::SetColor(15);
-	Graphics::gotoXY(ScreenColumns - 27, 14);
-	cout << "P1         P2"; // 9 blank space
-	Graphics::gotoXY(ScreenColumns - 27, 15);
-	cout << "0     :    0";
+	int x = board->getUpperLeftCornerX() + board->getSize() * 4;
+	int y = board->getUpperLeftCornerY() + 2 * 5;
+
+	Graphics::gotoXY(x + 6, y);
+	Graphics::SetColor(9);
+	for(int i = 1; i <= 23; i++)
+		printf_s(" ");
+
+	Graphics::gotoXY(x + 9, y + 2);
+	Graphics::SetColor(10);
+	printf_s("        "); //8 blank space
+	Graphics::gotoXY(x + 9, y + 4);
+	Graphics::SetColor(8);
+	printf_s("        "); //8 blank space 
 
 	Graphics::gotoXY(ScreenColumns - 25, 19);
 	Graphics::SetColor(13);
 	cout << "So nuoc di";
 	Graphics::SetColor(15);
 	Graphics::gotoXY(ScreenColumns - 28, 21);
-	cout << "X - 0  :  O - 0";
+	cout << "X - 0  :  O - 0 ";
 	
 	board->drawBoard();
 }
@@ -577,17 +617,31 @@ void BattleScreen::AskPlayer() {
 	}
 }
 
+void BattleScreen::handleUtilityKey() {
+	while (true) {
+		if (_kbhit()) {
+			char key = _getch();
+
+			if (key = VK_ESCAPE) {
+				
+			}
+		}
+	}
+}
+
 void BattleScreen::startBattle() {
 	/*
 		Ready for starting
 	*/
+
+	board->resetBoard();
 
 	while (true) { //Blinking effect
 
     		if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		else 
- 			Graphics::Blink((ScreenColumns - 41) / 2 - 20, 3, "NHAN PHIM SPACE DE BAT DAU");
+ 			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
 	}
 	
 	/*
@@ -611,7 +665,6 @@ void BattleScreen::startBattle() {
 	Graphics::SetColor(15);
 	cout << "--";
 
-	board->resetBoard();
 	Graphics::VisibleCursor(true);
 	CurrCursorX = board->getXAtCell(9, 9) + 2;
 	CurrCursorY = board->getYAtCell(9, 9) + 1;
@@ -633,6 +686,40 @@ void BattleScreen::startBattle() {
 }
 
 void BattleScreen::finishBattle() {
+	/*
+		Update score
+	*/
+	
+	if (this->Result == 'W') {
+		Graphics::gotoXY(ScreenColumns - 27, 15);
+		this->NumberOfWinsOfPlayer++;
+		Graphics::SetColor(10);
+		cout << this->NumberOfWinsOfPlayer;
+	}
+	else {
+		if (this->Result == 'L') {
+			Graphics::gotoXY(ScreenColumns - 16, 15);
+			this->NumberOfWinsOfComputer++;
+			Graphics::SetColor(12);
+			cout << this->NumberOfWinsOfComputer;
+		}
+		else if (this->Result == 'D') {
+			Graphics::gotoXY(ScreenColumns - 27, 15);
+			this->NumberOfWinsOfPlayer++;
+			Graphics::SetColor(10);
+			cout << this->NumberOfWinsOfPlayer;
+
+			Graphics::gotoXY(ScreenColumns - 16, 15);
+			this->NumberOfWinsOfComputer++;
+			Graphics::SetColor(12);
+			cout << this->NumberOfWinsOfComputer;
+		}
+	}
+
+
+	/*
+		Print result and ask player
+	*/
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 24, 3);
 	for (int i = 1; i <= 30; i++)
 		printf_s(" ");
@@ -640,7 +727,6 @@ void BattleScreen::finishBattle() {
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 12, 4);
 	for (int i = 1; i <= 7; i++)
 		printf_s(" ");
-
 
 	Graphics::VisibleCursor(false);
 

@@ -23,6 +23,7 @@ class BattleScreen {
 		//void getControlFromComputer(); // update later
 		void checkCurrentState();
 		void AskPlayer();
+		void handleUtilityKey();
 	public:
 	    bool Loop;
 		BattleScreen(int);

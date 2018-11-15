@@ -4,7 +4,7 @@
 #include "Graphics.h"
 
 GameCaro::GameCaro(){
-	Graphics::InitializeComponent();
+	Graphics::SetFullConsoleScreen();
 
 	this->PriorityChessMan = 'X';
 
@@ -15,16 +15,17 @@ GameCaro::GameCaro(){
 
 		if (typeSubMenu == 0) { //New Game
 			BattleScreen* scrBattle = new BattleScreen(20); //Size of chessboard is 20x20
+			system("cls");
 
 			while (scrBattle->Loop)
 			{
-				system("cls");
 				scrBattle->drawGUI();
 				scrBattle->startBattle();
 				scrBattle->finishBattle();
 			}	
 
 			delete scrBattle;
+			system("cls");
 		}
 		else if (typeSubMenu == 5) { //Exit
 			return;

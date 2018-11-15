@@ -24,7 +24,7 @@ void MainScreen::PrintTitle(){
 	/*
 		print 'C'
 	*/
-	Sleep(800);
+	Sleep(700);
 
 	Graphics::gotoXY(initX, initY);
 	printf_s("CCCCCCCCCCCCC");
@@ -62,7 +62,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX, initY + 15);
 	printf_s("CCCCCCCCCCCCC");
 
-	Sleep(900);
+	Sleep(700);
 
 	/*
 		print 'A'
@@ -105,7 +105,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX, initY + 11);
 	printf_s("aaaaaaaaaa  aaaa");
 
-	Sleep(900);
+	Sleep(700);
 
 	/*
 		print 'R'
@@ -138,7 +138,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX + 1, initY + 11);
 	printf_s("rrrrrrr");
 
-	Sleep(900);
+	Sleep(700);
 
 	/*
 		print 'O'

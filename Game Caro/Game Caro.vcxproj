@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArtificialIntelligence.h" />
     <ClInclude Include="BattleScreen.h" />
     <ClInclude Include="CellofBoard.h" />
     <ClInclude Include="ChessBoard.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="MainScreen.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArtificialIntelligence.cpp" />
     <ClCompile Include="BattleScreen.cpp" />
     <ClCompile Include="ChessBoard.cpp" />
     <ClCompile Include="GameCaro.cpp" />

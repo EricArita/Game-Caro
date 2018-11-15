@@ -7,7 +7,7 @@ class Graphics {
 		static int ConsoleScreenColumns;
 		static int ConsoleScreenRows;
 	public:
-		static void InitializeComponent();
+		static void SetFullConsoleScreen();
 		static void SetColor(int);
 		static void gotoXY(int, int);
 		static void VisibleCursor(bool);
