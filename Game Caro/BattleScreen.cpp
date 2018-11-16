@@ -1,5 +1,6 @@
 #include "BattleScreen.h"
 #include "Graphics.h"
+#include "ArtificialIntelligence.h"
 #include "Windows.h"
 #include <conio.h>
 #include <stdio.h>
@@ -194,32 +195,33 @@ void BattleScreen::getControlFromPlayer() {
 	}
 }
 
-void BattleScreen::checkCurrentState(){
+void BattleScreen::checkCurrentState(int currRow, int currColumn){
 	if (board->getAmountChessMan() == 20 * 20) {
 		this->Result = 'D';
 		return;
 	}
 
 	int n = board->getSize();
-	int currRow = -1, currColumn = -1;
 	int i, j;
 	int AmountX, AmountO;
 	char c1, c2, c3, c4, c5;
 	int t, k;
 	
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			int x = board->getXAtCell(i, j) + 2;
-			int y = board->getYAtCell(i, j) + 1;
-			if (x == this->CurrCursorX && y == this->CurrCursorY) {
-				currRow = i;
-				currColumn = j;
-				break;
+	if (currRow == -1) {
+		for (i = 0; i < n; i++) {
+			for (j = 0; j < n; j++) {
+				int x = board->getXAtCell(i, j) + 2;
+				int y = board->getYAtCell(i, j) + 1;
+				if (x == this->CurrCursorX && y == this->CurrCursorY) {
+					currRow = i;
+					currColumn = j;
+					break;
+				}
 			}
-		}
 
-		if (currRow != -1)
-			break;
+			if (currRow != -1)
+				break;
+		}
 	}
 
 	/*	
@@ -638,7 +640,7 @@ void BattleScreen::startBattle() {
 
 	while (true) { //Blinking effect
 
-    		if (GetAsyncKeyState(VK_SPACE)) 
+     		if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		else 
  			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
@@ -675,10 +677,29 @@ void BattleScreen::startBattle() {
 		thread thrClock = new thread(startClock());
 	*/
 
+	AI* computer = new AI();
+
 	while (!this->Stop) //Loop until finishing the match
 	{
-		this->getControlFromPlayer();
-		this->checkCurrentState();
+		if (Turn == 'X') {
+			this->getControlFromPlayer();
+			this->checkCurrentState(-1, -1);
+		}
+		else {
+			computer->findBestMove(board->getpBoard(), board->getAmountChessMan());
+
+			int BestRow = computer->getBestRow();
+			int BestCol = computer->getBestCol();
+
+			computer->Go(board->getpBoard());
+			this->CurrCursorX = board->getXAtCell(BestRow, BestCol) + 2;
+			this->CurrCursorY = board->getYAtCell(BestRow, BestCol) + 1;
+
+			board->setAmountChessMan(board->getAmountChessMan() + 1);
+			
+			this->checkCurrentState(BestRow, BestCol);
+		}
+	
 		this->changeTurn();
 	}
 	

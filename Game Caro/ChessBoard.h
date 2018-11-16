@@ -14,6 +14,8 @@ class ChessBoard {
 		int getXAtCell(int i, int j) { return pBoard[i][j].getX(); }
 		int getYAtCell(int i, int j) { return pBoard[i][j].getY(); }
 		int getAmountChessMan() { return AmountChessMan; }
+		void setAmountChessMan(int value) { AmountChessMan = value; }
+		CellofBoard**& getpBoard() { return pBoard; }
 		char getChessManAtCell(int i, int j) { return pBoard[i][j].getChessMan(); }
 	public:
 		ChessBoard(int, int, int);

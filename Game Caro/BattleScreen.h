@@ -21,7 +21,7 @@ class BattleScreen {
 		void changeTurn();
 		void getControlFromPlayer();
 		//void getControlFromComputer(); // update later
-		void checkCurrentState();
+		void checkCurrentState(int, int);
 		void AskPlayer();
 		void handleUtilityKey();
 	public:
