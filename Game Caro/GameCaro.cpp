@@ -21,6 +21,14 @@ GameCaro::GameCaro(){
 			{
 				scrBattle->drawGUI();
 				scrBattle->startBattle();
+
+				if (!scrBattle->Loop) {
+					if (scrBattle->getUtilityKey() == "esc")
+						return;
+					if (scrBattle->getUtilityKey() == "backspace")
+						break;
+				}
+
 				scrBattle->finishBattle();
 			}	
 

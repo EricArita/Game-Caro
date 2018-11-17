@@ -175,12 +175,12 @@ void MainScreen::PrintTitle(){
 	printf_s("ooooooooooo");
 }
 
-void MainScreen::PrintMenu(int index, int type) {
+void MainScreen::PrintMenu(int index) {
 	string submenu[6];
 
-	switch (type)	
+	switch (this->TypeMenu)	
 	{
-		case 1: //MainMenu
+		case 0: //MainMenu
 			submenu[0] = "New Game";
 			submenu[1] = "Load Game";
 			submenu[2] = "Options";
@@ -188,7 +188,13 @@ void MainScreen::PrintMenu(int index, int type) {
 			submenu[4] = "About";
 			submenu[5] = "Exit";
 			break;
-		case 2: //Options
+		case 1: 
+			submenu[0] = "Human vs Human";
+			submenu[1] = "Human vs Computer";
+			submenu[2] = "       ";
+			submenu[3] = "    ";
+			submenu[4] = "     ";
+			submenu[5] = "    ";
 			break;
 	}
 	
@@ -207,17 +213,21 @@ void MainScreen::PrintMenu(int index, int type) {
 	}
 }
 
-int MainScreen::MenuProcessing(){
-	this->PrintMenu(0, 1);
+void MainScreen::MenuProcessing(int TypeMenu){
+	this->TypeMenu = TypeMenu;
+	this->PrintMenu(0);
 
 	int currSubmenu = 0;
+
 	while (true) {
+		_getch();
+
 		if (_kbhit()) {
 			if (GetAsyncKeyState(VK_DOWN)){
 				currSubmenu++;
-				if (currSubmenu == 6)
+				if (currSubmenu == SizeofMenu[TypeMenu])
 					currSubmenu = 0;
-				this->PrintMenu(currSubmenu, 1);
+				this->PrintMenu(currSubmenu);
 				Sleep(200);
 				continue;
 			}
@@ -225,21 +235,30 @@ int MainScreen::MenuProcessing(){
 			if (GetAsyncKeyState(VK_UP)) {
 				currSubmenu--;
 				if (currSubmenu == -1)
-					currSubmenu = 5;
-				this->PrintMenu(currSubmenu, 1);
+					currSubmenu = SizeofMenu[TypeMenu] - 1;
+				this->PrintMenu(currSubmenu);
 				Sleep(200);
 				continue;
 			}
 
 			if (GetAsyncKeyState(VK_RETURN)) {
-				if (currSubmenu == 0) { //New Game
-					system("cls");
-					return 0;
+				if (TypeMenu == 0) {
+					if (currSubmenu == 0) { //New game
+						MenuProcessing(1);
+						return;
+					}
+
+					if (currSubmenu == 5) { //Exit
+						system("cls");
+						this->TypeMenu = 5;
+						return;
+					}
 				}
 
-				if (currSubmenu == 5) { //Exit
-					system("cls");
-					return 5;
+				if (TypeMenu == 1) {
+					if (currSubmenu == 0) {
+						return;
+					}
 				}
 			}
 		}

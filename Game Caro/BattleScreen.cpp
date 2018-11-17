@@ -140,8 +140,8 @@ void BattleScreen::drawGUI() {
 
 void BattleScreen::getControlFromPlayer() {
 	while (true)
-	{
-			char key = _getch();
+	{				
+		 char key = _getch();
 
 			if (key == 'w' || key == 'W') {
 				if (CurrCursorY - 2 > board->getUpperLeftCornerY()) {
@@ -187,9 +187,23 @@ void BattleScreen::getControlFromPlayer() {
 						Graphics::gotoXY(ScreenColumns - 14, 21);
 						cout << this->NumberOfChessManO;
 					}
-									
+
 					return;
 				}
+			}
+
+			/*
+				Utility Key
+			*/
+			if (key == VK_ESCAPE) {
+				this->UtilityKey = "esc";
+				this->Loop = false;
+				return;
+			}
+			if (key == VK_BACK) {
+				this->UtilityKey = "backspace";
+				this->Loop = false;
+				return;
 			}
 	
 	}
@@ -639,10 +653,22 @@ void BattleScreen::startBattle() {
 	board->resetBoard();
 
 	while (true) { //Blinking effect
-         if (GetAsyncKeyState(VK_SPACE)) 
+           if (GetAsyncKeyState(VK_SPACE)) 
 				break;
-		else 
- 			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
+		 
+		 if (GetAsyncKeyState(VK_ESCAPE)) {
+			 this->UtilityKey = "esc";
+			 this->Loop = false;
+			 return;
+		 }
+
+		 if (GetAsyncKeyState(VK_BACK)) {
+			 this->UtilityKey = "backspace";
+			 this->Loop = false;
+			 return;
+		 }
+ 		
+		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
 	}
 	
 	/*
@@ -682,6 +708,10 @@ void BattleScreen::startBattle() {
 	{
 		if (Turn == 'X') {
 			this->getControlFromPlayer();
+			
+			if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
+				return;
+
 			this->checkCurrentState(-1, -1);
 		}
 		else {
@@ -709,7 +739,6 @@ void BattleScreen::finishBattle() {
 	/*
 		Update score
 	*/
-	
 	if (this->Result == 'W') {
 		Graphics::gotoXY(ScreenColumns - 27, 15);
 		this->NumberOfWinsOfPlayer++;
