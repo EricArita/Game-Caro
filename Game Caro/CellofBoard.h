@@ -18,7 +18,7 @@ class CellofBoard {
 
 		int getX() { return x; }
 		int getY() { return y; }
-		char getChessMan() { return ChessMan; }
+			char getChessMan() { return ChessMan; }
 		void setX(int value) { x = value; }
 		void setY(int value) { y = value; }
 		void setChessMan(char value) { ChessMan = value; }

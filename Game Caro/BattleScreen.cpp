@@ -639,8 +639,7 @@ void BattleScreen::startBattle() {
 	board->resetBoard();
 
 	while (true) { //Blinking effect
-
-     		if (GetAsyncKeyState(VK_SPACE)) 
+         if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		else 
  			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
@@ -686,12 +685,12 @@ void BattleScreen::startBattle() {
 			this->checkCurrentState(-1, -1);
 		}
 		else {
-			computer->findBestMove(board->getpBoard(), board->getAmountChessMan());
+			computer->findBestMove(board->getpBoard(), board->getSize());
 
 			int BestRow = computer->getBestRow();
 			int BestCol = computer->getBestCol();
 
-			computer->Go(board->getpBoard());
+			computer->Go(board->getpBoard(), this->NumberOfChessManO);
 			this->CurrCursorX = board->getXAtCell(BestRow, BestCol) + 2;
 			this->CurrCursorY = board->getYAtCell(BestRow, BestCol) + 1;
 
