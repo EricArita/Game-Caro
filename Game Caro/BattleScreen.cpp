@@ -196,6 +196,7 @@ void BattleScreen::getControlFromPlayer() {
 				Utility Key
 			*/
 			if (key == VK_ESCAPE) {
+				system("cls");
 				this->UtilityKey = "esc";
 				this->Loop = false;
 				return;
@@ -645,7 +646,7 @@ void BattleScreen::handleUtilityKey() {
 	}
 }
 
-void BattleScreen::startBattle() {
+void BattleScreen::startBattle(string ModePlay) {
 	/*
 		Ready for starting
 	*/
@@ -657,6 +658,7 @@ void BattleScreen::startBattle() {
 				break;
 		 
 		 if (GetAsyncKeyState(VK_ESCAPE)) {
+			 system("cls");
 			 this->UtilityKey = "esc";
 			 this->Loop = false;
 			 return;
@@ -704,32 +706,47 @@ void BattleScreen::startBattle() {
 
 	AI* computer = new AI();
 
-	while (!this->Stop) //Loop until finishing the match
-	{
-		if (Turn == 'X') {
+	if (ModePlay == "Player vs Player") {
+		while (!this->Stop) //Loop until finishing the match
+		{
 			this->getControlFromPlayer();
-			
+
 			if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
 				return;
 
 			this->checkCurrentState(-1, -1);
+			this->changeTurn();
 		}
-		else {
-			computer->findBestMove(board->getpBoard(), board->getSize());
+	}
+	else if (ModePlay == "Player vs Computer") {
+		while (!this->Stop) //Loop until finishing the match
+		{
+			if (Turn == 'X') {
+				this->getControlFromPlayer();
 
-			int BestRow = computer->getBestRow();
-			int BestCol = computer->getBestCol();
+				if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
+					return;
 
-			computer->Go(board->getpBoard(), this->NumberOfChessManO);
-			this->CurrCursorX = board->getXAtCell(BestRow, BestCol) + 2;
-			this->CurrCursorY = board->getYAtCell(BestRow, BestCol) + 1;
+				this->checkCurrentState(-1, -1);
+			}
+			else {
+				computer->findBestMove(board->getpBoard(), board->getSize());
 
-			board->setAmountChessMan(board->getAmountChessMan() + 1);
-			
-			this->checkCurrentState(BestRow, BestCol);
+				int BestRow = computer->getBestRow();
+				int BestCol = computer->getBestCol();
+
+				computer->Go(board->getpBoard(), this->NumberOfChessManO);
+				this->CurrCursorX = board->getXAtCell(BestRow, BestCol) + 2;
+				this->CurrCursorY = board->getYAtCell(BestRow, BestCol) + 1;
+
+				board->setAmountChessMan(board->getAmountChessMan() + 1);
+
+				this->checkCurrentState(BestRow, BestCol);
+			}
+
+			this->changeTurn();
+			Sleep(50);
 		}
-	
-		this->changeTurn();
 	}
 	
 	return;

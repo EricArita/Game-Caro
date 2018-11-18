@@ -6,6 +6,7 @@
 #include <string>
 #include <stdio.h>
 #include <conio.h>
+#include <string>
 using namespace std;
 
 MainScreen::MainScreen() {
@@ -213,7 +214,7 @@ void MainScreen::PrintMenu(int index) {
 	}
 }
 
-void MainScreen::MenuProcessing(int TypeMenu){
+void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 	this->TypeMenu = TypeMenu;
 	this->PrintMenu(0);
 
@@ -244,7 +245,7 @@ void MainScreen::MenuProcessing(int TypeMenu){
 			if (GetAsyncKeyState(VK_RETURN)) {
 				if (TypeMenu == 0) {
 					if (currSubmenu == 0) { //New game
-						MenuProcessing(1);
+						SetFeatures(1, ModePlay);
 						return;
 					}
 
@@ -256,9 +257,12 @@ void MainScreen::MenuProcessing(int TypeMenu){
 				}
 
 				if (TypeMenu == 1) {
-					if (currSubmenu == 0) {
-						return;
-					}
+					if (currSubmenu == 0)
+						ModePlay = "Player vs Player";
+					else
+						ModePlay = "Player vs Computer";
+					
+					return;
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 #pragma once
 #include "ChessBoard.h"
 #include <string>
+using namespace std;
 
 class BattleScreen {
 	private:
@@ -17,7 +18,7 @@ class BattleScreen {
 		int NumberOfWinsOfComputer;
 		int NumberOfChessManX;
 		int NumberOfChessManO;
-		std::string UtilityKey;
+		string UtilityKey;
 	private:
 		void startCLock();
 		void changeTurn();
@@ -29,8 +30,8 @@ class BattleScreen {
 	public:
 	    bool Loop;
 		BattleScreen(int);
-		std::string getUtilityKey() { return UtilityKey; }
+		string getUtilityKey() { return UtilityKey; }
 		void drawGUI();
-		void startBattle();
+		void startBattle(string);
 		void finishBattle();
 };

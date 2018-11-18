@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+using namespace std;
 
 class MainScreen{
 	private:
@@ -10,6 +12,7 @@ class MainScreen{
 		void PrintMenu(int);
 	public:
 		MainScreen();
+		int getTypeMenu() { return TypeMenu; }
 		void PrintTitle();
-		void MenuProcessing(int);
+		void SetFeatures(int, string&);
 };

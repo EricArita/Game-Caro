@@ -11,16 +11,17 @@ GameCaro::GameCaro(){
 	while (true) {
 		MainScreen* scrMain = new MainScreen();
 		scrMain->PrintTitle();
-		int typeSubMenu = scrMain->MenuProcessing();
+		scrMain->SetFeatures(0, this->ModePlay);
+		int TypeMenu = scrMain->getTypeMenu();
 
-		if (typeSubMenu == 0) { //New Game
+		if (TypeMenu == 1) { //New Game
 			BattleScreen* scrBattle = new BattleScreen(20); //Size of chessboard is 20x20
 			system("cls");
 
 			while (scrBattle->Loop)
 			{
 				scrBattle->drawGUI();
-				scrBattle->startBattle();
+				scrBattle->startBattle(this->ModePlay);
 
 				if (!scrBattle->Loop) {
 					if (scrBattle->getUtilityKey() == "esc")
@@ -35,7 +36,7 @@ GameCaro::GameCaro(){
 			delete scrBattle;
 			system("cls");
 		}
-		else if (typeSubMenu == 5) { //Exit
+		else if (TypeMenu == 5) { //Exit
 			return;
 		}
 
