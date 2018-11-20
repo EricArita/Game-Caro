@@ -22,11 +22,11 @@ class BattleScreen {
 	private:
 		void startCLock();
 		void changeTurn();
+		void SaveGame();
 		void getControlFromPlayer();
 		//void getControlFromComputer(); // update later
 		void checkCurrentState(int, int);
 		void AskPlayer();
-		void handleUtilityKey();
 	public:
 	    bool Loop;
 		BattleScreen(int);

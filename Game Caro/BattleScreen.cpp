@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "ArtificialIntelligence.h"
 #include "Windows.h"
+#include "CellofBoard.h"
 #include <conio.h>
 #include <stdio.h>
 #include <thread>
@@ -201,10 +202,15 @@ void BattleScreen::getControlFromPlayer() {
 				this->Loop = false;
 				return;
 			}
+
 			if (key == VK_BACK) {
 				this->UtilityKey = "backspace";
 				this->Loop = false;
 				return;
+			}
+
+			if (key == 0x32) { // key 2
+				SaveGame();
 			}
 	
 	}
@@ -630,20 +636,43 @@ void BattleScreen::AskPlayer() {
 				this->FinishThreadAskPlayer = true;
 				return;
 			}
+
+			/*
+				Utility Key
+			*/
+			if (GetAsyncKeyState(VK_ESCAPE)) {
+				system("cls");
+				this->UtilityKey = "esc";
+				this->Loop = false;
+				return;
+			}
+
+			if (GetAsyncKeyState(VK_BACK)) {
+				this->UtilityKey = "backspace";
+				this->Loop = false;
+				return;
+			}
 		}
 	}
 }
 
-void BattleScreen::handleUtilityKey() {
-	while (true) {
-		if (_kbhit()) {
-			char key = _getch();
+void BattleScreen::SaveGame() {
+	FILE* fwriter;
+	fopen_s(&fwriter,"SaveGameState.txt", "w");
 
-			if (key = VK_ESCAPE) {
-				
-			}
-		}
+	fprintf(fwriter, "%c %d %d %d %d\n", this->Turn, this->NumberOfChessManX, this->NumberOfChessManO, this->NumberOfWinsOfPlayer, this->NumberOfWinsOfComputer);
+	
+	CellofBoard** pBoard = this->board->getpBoard();
+	int n = this->board->getSize();
+
+	for (int i = 0; i < n; i++){
+		for (int j = 0; j < n; j++)
+			fprintf(fwriter, "%c", pBoard[i][j].getChessMan());
+
+		fprintf(fwriter, "\n");
 	}
+
+	fclose(fwriter);
 }
 
 void BattleScreen::startBattle(string ModePlay) {
@@ -654,7 +683,7 @@ void BattleScreen::startBattle(string ModePlay) {
 	board->resetBoard();
 
 	while (true) { //Blinking effect
-           if (GetAsyncKeyState(VK_SPACE)) 
+         if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		 
 		 if (GetAsyncKeyState(VK_ESCAPE)) {
@@ -668,6 +697,10 @@ void BattleScreen::startBattle(string ModePlay) {
 			 this->UtilityKey = "backspace";
 			 this->Loop = false;
 			 return;
+		 }
+
+		 if (GetAsyncKeyState(0x32)) { // key 2
+			   SaveGame();
 		 }
  		
 		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
@@ -801,11 +834,14 @@ void BattleScreen::finishBattle() {
 	thread askPlayer(&BattleScreen::AskPlayer, this);
 	askPlayer.detach();
 	askPlayer.~thread();
-	
+
 	Sleep(10); //The speed of main thread is faster than askPlayer thread so reducing speed
 			  //of main thread a bit before continuing for not causing collision
 
 	while (!this->FinishThreadAskPlayer) {
+		if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
+			return;
+
 		if (this->Result == 'W') {
 			Graphics::Blink((ScreenColumns - 41) / 2 - 21, 3, "YOU WIN!");
 			Sleep(20);
