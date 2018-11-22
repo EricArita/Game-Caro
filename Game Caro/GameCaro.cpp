@@ -15,17 +15,18 @@ GameCaro::GameCaro(){
 		int TypeMenu = scrMain->getTypeMenu();
 
 		if (TypeMenu == 1) { //New Game
-			BattleScreen* scrBattle = new BattleScreen(20); //Size of chessboard is 20x20
+			BattleScreen* scrBattle = new BattleScreen(20, this->ModePlay); //Size of chessboard is 20x20
 			system("cls");
 
 			while (scrBattle->Loop)
 			{
 				scrBattle->drawGUI();
-				scrBattle->startBattle(this->ModePlay);
+				scrBattle->startBattle();
 
 				if (!scrBattle->Loop) {
 					if (scrBattle->getUtilityKey() == "esc")
 						return;
+
 					if (scrBattle->getUtilityKey() == "backspace")
 						break;
 				}
@@ -34,12 +35,42 @@ GameCaro::GameCaro(){
 			}	
 
 			delete scrBattle;
-			system("cls");
+			delete scrMain;
+			system("cls");		
+			continue;
 		}
-		else if (TypeMenu == 5) { //Exit
+
+		if (TypeMenu == 1) {
+			BattleScreen* scrBattle = new BattleScreen(20);
+			scrBattle->LoadGame(this->ModePlay);
+			system("cls");
+
+			while (scrBattle->Loop)
+			{
+				scrBattle->drawGUI();
+				scrBattle->startBattle();
+
+				if (!scrBattle->Loop) {
+					if (scrBattle->getUtilityKey() == "esc")
+						return;
+
+					if (scrBattle->getUtilityKey() == "backspace")
+						break;
+				}
+
+				scrBattle->finishBattle();
+			}
+
+			delete scrBattle;
+			delete scrMain;
+			system("cls");
+			continue;
+		}
+
+		if (TypeMenu == 5) { //Exit
 			return;
 		}
 
-		delete scrMain;
+		
 	}
 }

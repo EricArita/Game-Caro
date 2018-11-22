@@ -18,6 +18,7 @@ class BattleScreen {
 		int NumberOfWinsOfComputer;
 		int NumberOfChessManX;
 		int NumberOfChessManO;
+		string ModePlay;
 		string UtilityKey;
 	private:
 		void startCLock();
@@ -28,10 +29,12 @@ class BattleScreen {
 		void checkCurrentState(int, int);
 		void AskPlayer();
 	public:
+		void LoadGame(string&);
 	    bool Loop;
 		BattleScreen(int);
+		BattleScreen(int, string);
 		string getUtilityKey() { return UtilityKey; }
-		void drawGUI();
-		void startBattle(string);
+		void drawGUI(string);
+		void startBattle();
 		void finishBattle();
 };

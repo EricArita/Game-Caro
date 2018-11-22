@@ -1,4 +1,4 @@
-X 2 2 0 1
+X 5 5 0 0 Player vs Player
                     
                     
                     
@@ -6,9 +6,9 @@ X 2 2 0 1
                     
                     
                     
-         O          
-        OX          
-         X          
+        OXOX        
+        XOXO        
+         XO         
                     
                     
                     

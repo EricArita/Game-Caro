@@ -16,15 +16,31 @@ BattleScreen::BattleScreen(int ChessBoardSize) {
 	ScreenRows = Graphics::ConsoleScreenRows;
 
 	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
+	board = new ChessBoard(ChessBoardSize, x, 6);
+	this->Loop = true;
+	this->Stop = false;
+}
+
+BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay) {
+	Graphics::getConsoleScreenSize();
+	ScreenColumns = Graphics::ConsoleScreenColumns;
+	ScreenRows = Graphics::ConsoleScreenRows;
+
+	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
 	this->Loop = true;
 	this->NumberOfWinsOfComputer = this->NumberOfWinsOfPlayer = 0;
+	this->NumberOfChessManX = this->NumberOfChessManO = 0;
+	this->ModePlay = ModePlay;
+	this->Stop = false;
+	this->Result = 'N';
+	this->Turn = 'X';
 }
 
-void BattleScreen::drawGUI() {
+void BattleScreen::drawGUI(string StartMode) {
 	Graphics::SetColor(14);
 
-	if (this->NumberOfWinsOfComputer + this->NumberOfWinsOfPlayer == 0) {
+	if ((StartMode == "New game" && this->NumberOfWinsOfPlayer + this->NumberOfWinsOfComputer == 0) || (StartMode == "Load game")) {
 		/*
 			Draw frame
 		*/
@@ -97,7 +113,7 @@ void BattleScreen::drawGUI() {
 		Graphics::gotoXY(ScreenColumns - 27, 14);
 		cout << "P1         P2"; // 9 blank space
 		Graphics::gotoXY(ScreenColumns - 27, 15);
-		cout << "0     :    0";
+		cout << this->NumberOfWinsOfPlayer << "     :     " <<  this->NumberOfWinsOfComputer;
 
 		/*
 			print list of utility keys
@@ -134,7 +150,7 @@ void BattleScreen::drawGUI() {
 	cout << "So nuoc di";
 	Graphics::SetColor(15);
 	Graphics::gotoXY(ScreenColumns - 28, 21);
-	cout << "X - 0  :  O - 0 ";
+	cout << "X - "  << this->NumberOfChessManX << "  :  O - " << this->NumberOfChessManO;
 	
 	board->drawBoard();
 }
@@ -660,7 +676,7 @@ void BattleScreen::SaveGame() {
 	FILE* fwriter;
 	fopen_s(&fwriter,"SaveGameState.txt", "w");
 
-	fprintf(fwriter, "%c %d %d %d %d\n", this->Turn, this->NumberOfChessManX, this->NumberOfChessManO, this->NumberOfWinsOfPlayer, this->NumberOfWinsOfComputer);
+	fprintf(fwriter, "%c %d %d %d %d %s\n", this->Turn, this->NumberOfChessManX, this->NumberOfChessManO, this->NumberOfWinsOfPlayer, this->NumberOfWinsOfComputer, this->ModePlay.c_str());
 	
 	CellofBoard** pBoard = this->board->getpBoard();
 	int n = this->board->getSize();
@@ -675,7 +691,30 @@ void BattleScreen::SaveGame() {
 	fclose(fwriter);
 }
 
-void BattleScreen::startBattle(string ModePlay) {
+void BattleScreen::LoadGame(string &ModePlay) {
+	FILE* freader;
+
+	if (fopen_s(&freader, "SaveGameState.txt", "r") != NULL) {
+		fscanf_s(freader, "%c%d%d%d%d%s", &this->Turn, &this->NumberOfChessManX, &this->NumberOfChessManO, &this->NumberOfWinsOfPlayer, &this->NumberOfWinsOfComputer, ModePlay.c_str());
+		this->ModePlay = ModePlay;
+		
+		CellofBoard** pBoard = board->getpBoard();
+		int n = board->getSize();
+
+		for(int i = 0; i < n ; i++)
+			for (int j = 0; j < n; j++) {
+				char c;
+				fscanf_s(freader, "%c", c);
+				pBoard[i][j].setChessMan(c);
+			}
+
+		fclose(freader);
+	}
+
+
+}
+
+void BattleScreen::startBattle() {
 	/*
 		Ready for starting
 	*/
@@ -709,11 +748,6 @@ void BattleScreen::startBattle(string ModePlay) {
 	/*
 		Starts
 	*/
-
-	this->Stop = false;
-	this->Result = 'N';
-	this->Turn = 'X';
-	this->NumberOfChessManX = this->NumberOfChessManO = 0;
 
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 24, 3);
 	Graphics::SetColor(13);

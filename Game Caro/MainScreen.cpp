@@ -249,6 +249,11 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 						return;
 					}
 
+					if (currSubmenu == 1) { //Load game
+						this->TypeMenu = 1;
+						return;
+					}
+
 					if (currSubmenu == 5) { //Exit
 						system("cls");
 						this->TypeMenu = 5;
@@ -256,7 +261,7 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 					}
 				}
 
-				if (TypeMenu == 1) {
+				if (TypeMenu == 1) { //mode play
 					if (currSubmenu == 0)
 						ModePlay = "Player vs Player";
 					else
@@ -264,6 +269,7 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 					
 					return;
 				}
+
 			}
 		}
 		
