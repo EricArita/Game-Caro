@@ -20,7 +20,7 @@ GameCaro::GameCaro(){
 
 			while (scrBattle->Loop)
 			{
-				scrBattle->drawGUI();
+				scrBattle->drawGUI("New game");
 				scrBattle->startBattle();
 
 				if (!scrBattle->Loop) {
@@ -40,14 +40,17 @@ GameCaro::GameCaro(){
 			continue;
 		}
 
-		if (TypeMenu == 1) {
+		if (TypeMenu == 2) {
 			BattleScreen* scrBattle = new BattleScreen(20);
 			scrBattle->LoadGame(this->ModePlay);
 			system("cls");
+			int cntLoop = -1;
 
 			while (scrBattle->Loop)
 			{
-				scrBattle->drawGUI();
+				cntLoop++;
+				cntLoop == 0 ? scrBattle->drawGUI("Load game") : scrBattle->drawGUI("New game");
+				
 				scrBattle->startBattle();
 
 				if (!scrBattle->Loop) {

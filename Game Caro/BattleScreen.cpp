@@ -693,23 +693,26 @@ void BattleScreen::SaveGame() {
 
 void BattleScreen::LoadGame(string &ModePlay) {
 	FILE* freader;
+	freopen_s(&freader, "SaveGameState.txt", "r", stdin);
 
-	if (fopen_s(&freader, "SaveGameState.txt", "r") != NULL) {
-		fscanf_s(freader, "%c%d%d%d%d%s", &this->Turn, &this->NumberOfChessManX, &this->NumberOfChessManO, &this->NumberOfWinsOfPlayer, &this->NumberOfWinsOfComputer, ModePlay.c_str());
-		this->ModePlay = ModePlay;
+	//if (fopen_s(&freader, "SaveGameState.txt", "r") == NULL) {
+	cin >> this->Turn >> this->NumberOfChessManX >> this->NumberOfChessManO >> this->NumberOfWinsOfPlayer >> this->NumberOfWinsOfComputer;
+	cin.ignore();
+	getline(cin, ModePlay);
+	this->ModePlay = ModePlay;
 		
-		CellofBoard** pBoard = board->getpBoard();
-		int n = board->getSize();
+	CellofBoard** pBoard = board->getpBoard();
+	int n = board->getSize();
 
-		for(int i = 0; i < n ; i++)
-			for (int j = 0; j < n; j++) {
-				char c;
-				fscanf_s(freader, "%c", c);
-				pBoard[i][j].setChessMan(c);
-			}
+	for(int i = 0; i < n ; i++)
+		for (int j = 0; j < n; j++) {
+			char c = ' ';
+			cin >> c;
+			pBoard[i][j].setChessMan(c);
+		}
 
-		fclose(freader);
-	}
+	fclose(freader);
+	//}
 
 
 }

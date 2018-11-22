@@ -250,7 +250,7 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 					}
 
 					if (currSubmenu == 1) { //Load game
-						this->TypeMenu = 1;
+						this->TypeMenu = 2;
 						return;
 					}
 
