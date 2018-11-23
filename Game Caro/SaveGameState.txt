@@ -1,14 +1,14 @@
-O 7 6 0 0 Player vs Player
+O 10 8 0 0 Player vs Player
                     
                     
                     
-           X        
-          XO        
-         XO         
-         OX         
-         XO         
-         OX         
-         XO         
+                    
+                    
+                    
+       X OXOXOXOX   
+       O XO         
+       XOOX         
+        XX          
                     
                     
                     

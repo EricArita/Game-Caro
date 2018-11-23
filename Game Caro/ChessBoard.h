@@ -1,5 +1,6 @@
 #pragma once
 #include "CellofBoard.h"
+#include <string>
 
 class ChessBoard {
 	private:
@@ -20,7 +21,7 @@ class ChessBoard {
 	public:
 		ChessBoard(int, int, int);
 		~ChessBoard();
-		void resetBoard();
+		void resetBoard(std::string);
 		void drawBoard();
 		bool setStateOfBoard(int, int, char);
 };

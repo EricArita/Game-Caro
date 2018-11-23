@@ -21,7 +21,7 @@ GameCaro::GameCaro(){
 			while (scrBattle->Loop)
 			{
 				scrBattle->drawGUI("New game");
-				scrBattle->startBattle();
+				scrBattle->startBattle("New game");
 
 				if (!scrBattle->Loop) {
 					if (scrBattle->getUtilityKey() == "esc")
@@ -40,8 +40,8 @@ GameCaro::GameCaro(){
 			continue;
 		}
 
-		if (TypeMenu == 2) {
-			BattleScreen* scrBattle = new BattleScreen(20);
+		if (TypeMenu == 2) { //Load game
+			BattleScreen* scrBattle = new BattleScreen(20, " ");
 			scrBattle->LoadGame(this->ModePlay);
 			system("cls");
 			int cntLoop = -1;
@@ -49,9 +49,15 @@ GameCaro::GameCaro(){
 			while (scrBattle->Loop)
 			{
 				cntLoop++;
-				cntLoop == 0 ? scrBattle->drawGUI("Load game") : scrBattle->drawGUI("New game");
+				if (cntLoop == 0) {
+					scrBattle->drawGUI("Load game");
+					scrBattle->startBattle("Load game");
+				}
+				else {
+					scrBattle->drawGUI("New game");
+					scrBattle->startBattle("New game");				
+				}
 				
-				scrBattle->startBattle();
 
 				if (!scrBattle->Loop) {
 					if (scrBattle->getUtilityKey() == "esc")

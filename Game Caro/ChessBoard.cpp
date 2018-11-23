@@ -19,16 +19,29 @@ ChessBoard::~ChessBoard() {
 	delete[] pBoard;
 }
 
-void ChessBoard::resetBoard() {
+void ChessBoard::resetBoard(string ResetMode) {
 	if (size == 0)
 		return;
 	for(int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
 			pBoard[i][j].setX(UpperLeftCornerX + 4 * j);
 			pBoard[i][j].setY(UpperLeftCornerY + 2 * i);
-			pBoard[i][j].setChessMan(' ');
-			Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
-			printf_s(" ");
+
+			if (ResetMode == "New game") {
+				pBoard[i][j].setChessMan(' ');
+				Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
+				printf_s(" ");
+			}
+			else {
+				Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
+				
+				if (pBoard[i][j].getChessMan() == 'X')
+					Graphics::SetColor(10);
+				else
+					Graphics::SetColor(12);
+
+				printf_s("%c", pBoard[i][j].getChessMan());
+			}
 		} 
 	AmountChessMan = 0;
 }
@@ -36,6 +49,7 @@ void ChessBoard::resetBoard() {
 void ChessBoard::drawBoard() {
 	int x = UpperLeftCornerX;
 	int y = UpperLeftCornerY;
+	Graphics::SetColor(15);
 
 	Graphics::gotoXY(x, y);
 	printf_s("%c", 218);

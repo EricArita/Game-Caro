@@ -31,10 +31,9 @@ class BattleScreen {
 	public:
 		void LoadGame(string&);
 	    bool Loop;
-		BattleScreen(int);
 		BattleScreen(int, string);
 		string getUtilityKey() { return UtilityKey; }
 		void drawGUI(string);
-		void startBattle();
+		void startBattle(string);
 		void finishBattle();
 };

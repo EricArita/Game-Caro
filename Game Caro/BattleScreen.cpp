@@ -10,17 +10,6 @@
 #include <string>
 using namespace std;
 
-BattleScreen::BattleScreen(int ChessBoardSize) {
-	Graphics::getConsoleScreenSize();
-	ScreenColumns = Graphics::ConsoleScreenColumns;
-	ScreenRows = Graphics::ConsoleScreenRows;
-
-	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
-	board = new ChessBoard(ChessBoardSize, x, 6);
-	this->Loop = true;
-	this->Stop = false;
-}
-
 BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay) {
 	Graphics::getConsoleScreenSize();
 	ScreenColumns = Graphics::ConsoleScreenColumns;
@@ -28,13 +17,9 @@ BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay) {
 
 	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
-	this->Loop = true;
-	this->NumberOfWinsOfComputer = this->NumberOfWinsOfPlayer = 0;
-	this->NumberOfChessManX = this->NumberOfChessManO = 0;
 	this->ModePlay = ModePlay;
+	this->Loop = true;
 	this->Stop = false;
-	this->Result = 'N';
-	this->Turn = 'X';
 }
 
 void BattleScreen::drawGUI(string StartMode) {
@@ -106,6 +91,7 @@ void BattleScreen::drawGUI(string StartMode) {
 		/*
 			print score
 		*/
+
 		Graphics::gotoXY(ScreenColumns - 23, 12);
 		Graphics::SetColor(13);
 		cout << "Ti so";
@@ -113,7 +99,7 @@ void BattleScreen::drawGUI(string StartMode) {
 		Graphics::gotoXY(ScreenColumns - 27, 14);
 		cout << "P1         P2"; // 9 blank space
 		Graphics::gotoXY(ScreenColumns - 27, 15);
-		cout << this->NumberOfWinsOfPlayer << "     :     " <<  this->NumberOfWinsOfComputer;
+		cout << this->NumberOfWinsOfPlayer << "    :     " <<  this->NumberOfWinsOfComputer;
 
 		/*
 			print list of utility keys
@@ -145,12 +131,25 @@ void BattleScreen::drawGUI(string StartMode) {
 	Graphics::SetColor(8);
 	printf_s("        "); //8 blank space 
 
+	if (StartMode == "New game")
+		this->NumberOfChessManX = this->NumberOfChessManO = 0;
+
 	Graphics::gotoXY(ScreenColumns - 25, 19);
 	Graphics::SetColor(13);
 	cout << "So nuoc di";
+
 	Graphics::SetColor(15);
 	Graphics::gotoXY(ScreenColumns - 28, 21);
-	cout << "X - "  << this->NumberOfChessManX << "  :  O - " << this->NumberOfChessManO;
+	cout << "X - ";
+
+	Graphics::SetColor(10);
+	cout << this->NumberOfChessManX;
+
+	Graphics::SetColor(15);
+	cout << "  :  O - ";
+
+	Graphics::SetColor(12);
+	cout << this->NumberOfChessManO << "  ";
 	
 	board->drawBoard();
 }
@@ -700,29 +699,33 @@ void BattleScreen::LoadGame(string &ModePlay) {
 	cin.ignore();
 	getline(cin, ModePlay);
 	this->ModePlay = ModePlay;
-		
+
 	CellofBoard** pBoard = board->getpBoard();
 	int n = board->getSize();
 
-	for(int i = 0; i < n ; i++)
-		for (int j = 0; j < n; j++) {
-			char c = ' ';
-			cin >> c;
-			pBoard[i][j].setChessMan(c);
-		}
+	string s;
+	for (int i = 0; i < n; i++){
+		getline(cin, s);
+
+		for (int j = 0; j < n; j++) 
+			pBoard[i][j].setChessMan(s[j]);
+	}
 
 	fclose(freader);
+	
 	//}
-
 
 }
 
-void BattleScreen::startBattle() {
+void BattleScreen::startBattle(string StartMode) {
 	/*
 		Ready for starting
 	*/
 
-	board->resetBoard();
+	if (StartMode == "New game") 
+		board->resetBoard("New game");
+	else
+		board->resetBoard("Load game");
 
 	while (true) { //Blinking effect
          if (GetAsyncKeyState(VK_SPACE)) 
@@ -775,6 +778,10 @@ void BattleScreen::startBattle() {
 	*/
 
 	AI* computer = new AI();
+	this->Result = 'N';
+	this->Loop = true;
+	this->Stop = false;
+	this->Turn = 'X';
 
 	if (ModePlay == "Player vs Player") {
 		while (!this->Stop) //Loop until finishing the match

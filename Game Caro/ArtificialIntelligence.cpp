@@ -436,5 +436,5 @@ void AI::Go(CellofBoard** &pBoard, int& NumberOfChessManO) {
 
 	NumberOfChessManO++;
 	Graphics::gotoXY(Graphics::ConsoleScreenColumns - 14, 21);
-	cout << NumberOfChessManO;
+	cout << NumberOfChessManO << "  ";
 }
