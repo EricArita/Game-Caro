@@ -1,15 +1,15 @@
-O 10 8 0 0 Player vs Player
+X 13 13 4 9 Player vs Computer
                     
                     
-                    
-                    
-                    
-                    
-       X OXOXOXOX   
-       O XO         
-       XOOX         
-        XX          
-                    
+            X       
+         O O        
+          O         
+        XOOOX       
+       OXXXOOOX     
+        X OXX       
+         OX         
+        O X         
+       X            
                     
                     
                     

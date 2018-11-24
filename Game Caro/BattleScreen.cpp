@@ -99,7 +99,12 @@ void BattleScreen::drawGUI(string StartMode) {
 		Graphics::gotoXY(ScreenColumns - 27, 14);
 		cout << "P1         P2"; // 9 blank space
 		Graphics::gotoXY(ScreenColumns - 27, 15);
-		cout << this->NumberOfWinsOfPlayer << "    :     " <<  this->NumberOfWinsOfComputer;
+		Graphics::SetColor(10);
+		cout << this->NumberOfWinsOfPlayer;
+		Graphics::SetColor(15);
+		cout << "    :     ";
+		Graphics::SetColor(12);
+		cout << this->NumberOfWinsOfComputer;
 
 		/*
 			print list of utility keys
@@ -146,7 +151,7 @@ void BattleScreen::drawGUI(string StartMode) {
 	cout << this->NumberOfChessManX;
 
 	Graphics::SetColor(15);
-	cout << "  :  O - ";
+	this->NumberOfChessManX > 9 ? cout << " :  O - " : cout << "  :  O - ";
 
 	Graphics::SetColor(12);
 	cout << this->NumberOfChessManO << "  ";
@@ -157,7 +162,7 @@ void BattleScreen::drawGUI(string StartMode) {
 void BattleScreen::getControlFromPlayer() {
 	while (true)
 	{				
-		 char key = _getch();
+			char key = _getch();
 
 			if (key == 'w' || key == 'W') {
 				if (CurrCursorY - 2 > board->getUpperLeftCornerY()) {
@@ -204,6 +209,7 @@ void BattleScreen::getControlFromPlayer() {
 						cout << this->NumberOfChessManO;
 					}
 
+
 					return;
 				}
 			}
@@ -221,6 +227,12 @@ void BattleScreen::getControlFromPlayer() {
 			if (key == VK_BACK) {
 				this->UtilityKey = "backspace";
 				this->Loop = false;
+				return;
+			}
+
+			if (key == 0x31) { // key 1
+				this->UtilityKey = "Restart";
+				this->NumberOfChessManX = this->NumberOfChessManO = 0;
 				return;
 			}
 
@@ -722,13 +734,18 @@ void BattleScreen::startBattle(string StartMode) {
 		Ready for starting
 	*/
 
-	if (StartMode == "New game") 
+	if (StartMode == "New game") {
 		board->resetBoard("New game");
+		this->Turn = 'X';
+	}
 	else
 		board->resetBoard("Load game");
 
 	while (true) { //Blinking effect
-         if (GetAsyncKeyState(VK_SPACE)) 
+		 Graphics::VisibleCursor(false);
+		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
+
+          if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		 
 		 if (GetAsyncKeyState(VK_ESCAPE)) {
@@ -748,7 +765,6 @@ void BattleScreen::startBattle(string StartMode) {
 			   SaveGame();
 		 }
  		
-		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
 	}
 	
 	/*
@@ -777,18 +793,17 @@ void BattleScreen::startBattle(string StartMode) {
 		thread thrClock = new thread(startClock());
 	*/
 
-	AI* computer = new AI();
 	this->Result = 'N';
 	this->Loop = true;
 	this->Stop = false;
-	this->Turn = 'X';
+	this->UtilityKey = " ";
 
 	if (ModePlay == "Player vs Player") {
 		while (!this->Stop) //Loop until finishing the match
 		{
 			this->getControlFromPlayer();
 
-			if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
+			if (this->UtilityKey == "esc" || this->UtilityKey == "backspace" || this->UtilityKey == "Restart")
 				return;
 
 			this->checkCurrentState(-1, -1);
@@ -796,12 +811,14 @@ void BattleScreen::startBattle(string StartMode) {
 		}
 	}
 	else if (ModePlay == "Player vs Computer") {
+		AI* computer = new AI();
+
 		while (!this->Stop) //Loop until finishing the match
 		{
 			if (Turn == 'X') {
 				this->getControlFromPlayer();
 
-				if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
+				if (this->UtilityKey == "esc" || this->UtilityKey == "backspace" || this->UtilityKey == "Restart")
 					return;
 
 				this->checkCurrentState(-1, -1);
@@ -824,6 +841,8 @@ void BattleScreen::startBattle(string StartMode) {
 			this->changeTurn();
 			Sleep(50);
 		}
+
+		delete computer;
 	}
 	
 	return;

@@ -7,6 +7,8 @@ class GameCaro {
 		//All game settings attributes
 		string ModePlay;
 		char PriorityChessMan;
+	private:
+		void InfoOfAuthor();
 	public:
 		GameCaro();
 };

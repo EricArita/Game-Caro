@@ -7,7 +7,7 @@ class MainScreen{
 		int ScreenColumns;
 		int ScreenRows;
 		int TypeMenu;
-		const int SizeofMenu[10] = { 6, 2 };
+		const int SizeofMenu[10] = { 6, 3 };
 	private:
 		void PrintMenu(int);
 	public:

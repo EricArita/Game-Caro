@@ -192,7 +192,7 @@ void MainScreen::PrintMenu(int index) {
 		case 1: 
 			submenu[0] = "Human vs Human";
 			submenu[1] = "Human vs Computer";
-			submenu[2] = "       ";
+			submenu[2] = "Back    ";
 			submenu[3] = "    ";
 			submenu[4] = "     ";
 			submenu[5] = "    ";
@@ -254,9 +254,14 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 						return;
 					}
 
+					if (currSubmenu == 4) {
+						this->TypeMenu = 5;
+						return;
+					}
+
 					if (currSubmenu == 5) { //Exit
 						system("cls");
-						this->TypeMenu = 5;
+						this->TypeMenu = 6;
 						return;
 					}
 				}
@@ -264,9 +269,11 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 				if (TypeMenu == 1) { //mode play
 					if (currSubmenu == 0)
 						ModePlay = "Player vs Player";
-					else
+					else if (currSubmenu == 1)
 						ModePlay = "Player vs Computer";
-					
+					else
+						ModePlay = " "; // back
+
 					return;
 				}
 
