@@ -3,6 +3,7 @@
 #include "ArtificialIntelligence.h"
 #include "Windows.h"
 #include "CellofBoard.h"
+#include "Time.h"
 #include <conio.h>
 #include <stdio.h>
 #include <thread>
@@ -161,43 +162,53 @@ void BattleScreen::drawGUI(string StartMode) {
 
 void BattleScreen::getControlFromPlayer() {
 	while (true)
-	{				
-			char key = _getch();
+	{			
+			PrintTime();
 
-			if (key == 'w' || key == 'W') {
+			Graphics::VisibleCursor(true);
+			Graphics::gotoXY(CurrCursorX, CurrCursorY);
+			Sleep(100);
+
+			if (GetAsyncKeyState(0x57)) { // press W 
 				if (CurrCursorY - 2 > board->getUpperLeftCornerY()) {
 					CurrCursorY -= 2;
 					Graphics::gotoXY(CurrCursorX, CurrCursorY);
 				}
+				Sleep(100);
 				continue;
 			}
 
-			if (key == 's' || key == 'S') {
+			if (GetAsyncKeyState(0x53)) { // press S
 				if (CurrCursorY + 2 < board->getUpperLeftCornerY() + board->getSize() * 2) {
 					CurrCursorY += 2;
 					Graphics::gotoXY(CurrCursorX, CurrCursorY);
 				}
+				Sleep(100);
 				continue;
 			}
 
-			if (key == 'a' || key == 'A') {
+			if (GetAsyncKeyState(0x41)) { // press A
 				if (CurrCursorX - 4 > board->getUpperLeftCornerX()) {
 					CurrCursorX -= 4;
 					Graphics::gotoXY(CurrCursorX, CurrCursorY);
 				}
+				Sleep(100);
 				continue;
 			}
 
-			if (key == 'd' || key == 'D') {
+			if (GetAsyncKeyState(0x44)) { // press D
 				if (CurrCursorX + 4 < board->getUpperLeftCornerX() + board->getSize() * 4) {
 					CurrCursorX += 4;
 					Graphics::gotoXY(CurrCursorX, CurrCursorY);
 				}
+				Sleep(100);
 				continue;
 			}
 
-			if (key == VK_RETURN) { //press Enter
+			if (GetAsyncKeyState(VK_RETURN)) { //press Enter
 				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) {
+					Graphics::VisibleCursor(false);
+
 					if (Turn == 'X') {
 						this->NumberOfChessManX++;
 						Graphics::gotoXY(ScreenColumns - 24, 21);
@@ -209,7 +220,7 @@ void BattleScreen::getControlFromPlayer() {
 						cout << this->NumberOfChessManO;
 					}
 
-
+					Sleep(200);
 					return;
 				}
 			}
@@ -217,27 +228,28 @@ void BattleScreen::getControlFromPlayer() {
 			/*
 				Utility Key
 			*/
-			if (key == VK_ESCAPE) {
+			if (GetAsyncKeyState(VK_ESCAPE)) {
 				system("cls");
 				this->UtilityKey = "esc";
 				this->Loop = false;
 				return;
 			}
 
-			if (key == VK_BACK) {
+			if (GetAsyncKeyState(VK_BACK)) {
 				this->UtilityKey = "backspace";
 				this->Loop = false;
 				return;
 			}
 
-			if (key == 0x31) { // key 1
+			if (GetAsyncKeyState(0x31)) { // key 1
 				this->UtilityKey = "Restart";
 				this->NumberOfChessManX = this->NumberOfChessManO = 0;
 				return;
 			}
 
-			if (key == 0x32) { // key 2
+			if (GetAsyncKeyState(0x32)) { // key 2
 				SaveGame();
+				Sleep(100);
 			}
 	
 	}
@@ -729,6 +741,12 @@ void BattleScreen::LoadGame(string &ModePlay) {
 
 }
 
+void BattleScreen::PrintTime() {
+	Time* t = new Time();
+	t->PrintTime(ScreenColumns-25, 2);
+	delete t;
+}
+
 void BattleScreen::startBattle(string StartMode) {
 	/*
 		Ready for starting
@@ -745,7 +763,9 @@ void BattleScreen::startBattle(string StartMode) {
 		 Graphics::VisibleCursor(false);
 		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
 
-          if (GetAsyncKeyState(VK_SPACE)) 
+		 PrintTime();
+
+         if (GetAsyncKeyState(VK_SPACE)) 
 				break;
 		 
 		 if (GetAsyncKeyState(VK_ESCAPE)) {
@@ -783,15 +803,9 @@ void BattleScreen::startBattle(string StartMode) {
 	Graphics::SetColor(15);
 	cout << "--";
 
-	Graphics::VisibleCursor(true);
 	CurrCursorX = board->getXAtCell(9, 9) + 2;
 	CurrCursorY = board->getYAtCell(9, 9) + 1;
 	Graphics::gotoXY(CurrCursorX, CurrCursorY);
-
-	/*
-		--> This feature is being developped
-		thread thrClock = new thread(startClock());
-	*/
 
 	this->Result = 'N';
 	this->Loop = true;
@@ -815,6 +829,7 @@ void BattleScreen::startBattle(string StartMode) {
 
 		while (!this->Stop) //Loop until finishing the match
 		{
+			Graphics::VisibleCursor(true);
 			if (Turn == 'X') {
 				this->getControlFromPlayer();
 
@@ -905,21 +920,24 @@ void BattleScreen::finishBattle() {
 		if (this->UtilityKey == "esc" || this->UtilityKey == "backspace")
 			return;
 
+		Graphics::VisibleCursor(false);
+		PrintTime();
+
 		if (this->Result == 'W') {
 			Graphics::Blink((ScreenColumns - 41) / 2 - 21, 3, "YOU WIN!");
-			Sleep(20);
+			Sleep(15);
 			Graphics::Blink((ScreenColumns - 41) / 2 - 11, 3, "YOU WIN!");
-			Sleep(20);
+			Sleep(15);
 			Graphics::Blink((ScreenColumns - 41) / 2 - 1, 3, "YOU WIN!");
-			Sleep(20);
+			Sleep(15);
 		}
 		else if (this->Result == 'D'){
 			Graphics::Blink((ScreenColumns - 41) / 2 - 23, 3, "DRAW!");
-			Sleep(20);
+			Sleep(15);
 			Graphics::Blink((ScreenColumns - 41) / 2 - 14, 3, "DRAW!");
-			Sleep(20);
+			Sleep(15);
 			Graphics::Blink((ScreenColumns - 41) / 2 - 5, 3, "DRAW!");
-			Sleep(20);
+			Sleep(15);
 		}	
 		else if (this->Result == 'L') {
 			Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "COMPUTER WIN!");

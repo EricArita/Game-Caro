@@ -21,11 +21,10 @@ class BattleScreen {
 		string ModePlay;
 		string UtilityKey;
 	private:
-		void startCLock();
+		void PrintTime();
 		void changeTurn();
 		void SaveGame();
 		void getControlFromPlayer();
-		//void getControlFromComputer(); // update later
 		void checkCurrentState(int, int);
 		void AskPlayer();
 	public:
