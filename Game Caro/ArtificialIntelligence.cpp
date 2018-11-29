@@ -428,12 +428,19 @@ void AI::findBestMove(CellofBoard** pBoard, int SizeofBoard) {
 	}
 }
 
-void AI::Go(CellofBoard** &pBoard, int& NumberOfChessManO) {
-	Graphics::gotoXY(pBoard[BestRow][BestCol].getX() + 2, pBoard[BestRow][BestCol].getY() + 1);
-	Graphics::SetColor(12);
-	printf_s("O");
-	pBoard[BestRow][BestCol].setChessMan('O');
+void AI::Go(CellofBoard** &pBoard, int& NumberOfChessManO, int NumberOfChessManX, int ColorO) {
+	if (NumberOfChessManX== 0) {
+		Graphics::gotoXY(pBoard[11][11].getX() + 2, pBoard[11][11].getY() + 1);
+		pBoard[11][11].setChessMan('O');
+	}
+	else {
+		Graphics::gotoXY(pBoard[BestRow][BestCol].getX() + 2, pBoard[BestRow][BestCol].getY() + 1);
+		pBoard[BestRow][BestCol].setChessMan('O');
+	}
 
+	Graphics::SetColor(ColorO);
+	printf_s("O");
+	
 	NumberOfChessManO++;
 	Graphics::gotoXY(Graphics::ConsoleScreenColumns - 14, 21);
 	cout << NumberOfChessManO << "  ";

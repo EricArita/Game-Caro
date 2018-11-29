@@ -176,24 +176,174 @@ void MainScreen::PrintTitle(){
 	printf_s("ooooooooooo");
 }
 
-void MainScreen::PrintMenu(int index) {
+bool MainScreen::HandleOptionMenu(int currSubmenu, char &PriorityChessMan, int &ColorX, int &ColorO) {
+	int initX = ScreenColumns / 2;
+	int initY = ScreenRows / 2;
+
+	switch (currSubmenu) {
+		case 0:
+			Graphics::gotoXY(initX + 19, initY + 4);
+			Graphics::SetColor(15);
+			cout << PriorityChessMan;
+			break;
+		case 1:
+			Graphics::gotoXY(initX + 12, initY + 6);
+			Graphics::SetColor(15);
+			cout << ColorX;
+			break;
+		case 2:
+			Graphics::gotoXY(initX + 12, initY + 8);
+			Graphics::SetColor(15);
+			cout << ColorO;
+			break;
+		case 3:
+			return true;
+	}
+
+	while (true) {
+			_getch();
+
+			if (_kbhit()) {
+				if (GetAsyncKeyState(VK_DOWN)) {
+					if (currSubmenu == 0) {
+						Graphics::gotoXY(initX + 19, initY + 4);
+
+						if (PriorityChessMan == 'X') {
+							printf_s("O");
+							PriorityChessMan = 'O';
+						}
+						else {
+							printf_s("X");
+							PriorityChessMan = 'X';
+						}
+
+						Sleep(200);
+						continue;
+					}
+
+					if(currSubmenu == 1) {
+						Graphics::gotoXY(initX + 12, initY + 6);
+						if (ColorX - 1 >= 0)
+							ColorX--;
+						else
+							ColorX = 15;
+
+						cout << ColorX << " ";
+
+						Sleep(200);
+						continue;
+					}
+
+					if (currSubmenu == 2) {
+						Graphics::gotoXY(initX + 12, initY + 8);
+						if (ColorO - 1 >= 0)
+							ColorO--;
+						else
+							ColorO = 15;
+
+						cout << ColorO << " ";
+
+						Sleep(200);
+						continue;
+					}
+				}
+
+				if (GetAsyncKeyState(VK_UP)) {
+					if (currSubmenu == 0) {
+						Graphics::gotoXY(initX + 19, initY + 4);
+
+						if (PriorityChessMan == 'X') {
+							printf_s("O");
+							PriorityChessMan = 'O';
+						}
+						else {
+							printf_s("X");
+							PriorityChessMan = 'X';
+						}
+
+						Sleep(200);
+						continue;
+					}
+
+					if (currSubmenu == 1) {
+						Graphics::gotoXY(initX + 12, initY + 6);
+						if (ColorX + 1 <= 15)
+							ColorX++;
+						else
+							ColorX = 0;
+
+						cout << ColorX << " ";
+
+						Sleep(200);
+						continue;
+					}
+
+					if (currSubmenu == 2) {
+						Graphics::gotoXY(initX + 12, initY + 8);
+						if (ColorO + 1 <= 15)
+							ColorO++;
+						else
+							ColorO = 0;
+
+						cout << ColorO << " ";
+
+						Sleep(200);
+						continue;
+					}
+				
+				}
+
+				if (GetAsyncKeyState(VK_RETURN)) {
+					switch (currSubmenu) {
+						case 0:
+							Graphics::gotoXY(initX + 19, initY + 4);
+							Graphics::SetColor(8);
+							cout << PriorityChessMan;
+							break;
+						case 1:
+							Graphics::gotoXY(initX + 12, initY + 6);
+							Graphics::SetColor(8);
+							cout << ColorX;
+							break;
+						case 2:
+							Graphics::gotoXY(initX + 12, initY + 8);
+							Graphics::SetColor(8);
+							cout << ColorO;
+							break;
+					}
+
+					return false;
+				}
+			}
+	}
+}
+
+void MainScreen::PrintMenu(int BoldAt, char PriorityChessMan, int ColorX, int ColorO) {
 	string submenu[6];
 
 	switch (this->TypeMenu)	
 	{
 		case 0: //MainMenu
-			submenu[0] = "New Game";
-			submenu[1] = "Load Game";
-			submenu[2] = "Options";
-			submenu[3] = "Help";
-			submenu[4] = "About";
-			submenu[5] = "Exit";
+			submenu[0] = "New Game                 ";
+			submenu[1] = "Load Game                ";
+			submenu[2] = "Options                  ";
+			submenu[3] = "Help                     ";
+			submenu[4] = "About                    ";
+			submenu[5] = "Exit                     ";
 			break;
 		case 1: 
 			submenu[0] = "Human vs Human";
 			submenu[1] = "Human vs Computer";
 			submenu[2] = "Back    ";
 			submenu[3] = "    ";
+			submenu[4] = "     ";
+			submenu[5] = "    ";
+			break;
+		case 3:
+			submenu[0] = "Priority chessman: ";
+			submenu[1] = "Color of X: ";
+			submenu[2] = "Color of O: ";
+			submenu[3] = "Back    ";
 			submenu[4] = "     ";
 			submenu[5] = "    ";
 			break;
@@ -205,18 +355,35 @@ void MainScreen::PrintMenu(int index) {
 	for (int i = 0; i < 6; i++) {
 		Graphics::gotoXY(initX, initY + 4 + 2 * i);
 
-		if (i == index)
+		if (BoldAt == i)
 			Graphics::SetColor(12);
 		else
 			Graphics::SetColor(14);
 
 		cout << submenu[i];
+
+		if (TypeMenu == 3) {
+			Graphics::SetColor(8);
+			string s(1, PriorityChessMan);
+			switch (i)
+			{
+				case 0:
+					cout << s;
+					break;
+				case 1:
+					cout << to_string(ColorX);
+					break;
+				case 2:
+					cout << to_string(ColorO);
+					break;
+			}
+		}
 	}
 }
 
-void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
+void MainScreen::SetFeatures(int TypeMenu, string &ModePlay, char &PriorityChessMan, int &ColorX, int &ColorO){
 	this->TypeMenu = TypeMenu;
-	this->PrintMenu(0);
+	this->PrintMenu(0, PriorityChessMan, ColorX, ColorO);
 
 	int currSubmenu = 0;
 
@@ -228,7 +395,7 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 				currSubmenu++;
 				if (currSubmenu == SizeofMenu[TypeMenu])
 					currSubmenu = 0;
-				this->PrintMenu(currSubmenu);
+				this->PrintMenu(currSubmenu, PriorityChessMan, ColorX, ColorO);
 				Sleep(200);
 				continue;
 			}
@@ -237,21 +404,36 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 				currSubmenu--;
 				if (currSubmenu == -1)
 					currSubmenu = SizeofMenu[TypeMenu] - 1;
-				this->PrintMenu(currSubmenu);
+				this->PrintMenu(currSubmenu, PriorityChessMan, ColorX, ColorO);
 				Sleep(200);
 				continue;
 			}
 
+
+
 			if (GetAsyncKeyState(VK_RETURN)) {
 				if (TypeMenu == 0) {
 					if (currSubmenu == 0) { //New game
-						SetFeatures(1, ModePlay);
-						return;
+						SetFeatures(1, ModePlay, PriorityChessMan, ColorX, ColorO);
+
+						if (ModePlay != " ")
+							return;
+
+						this->TypeMenu = TypeMenu;
+						this->PrintMenu(0, PriorityChessMan, ColorX, ColorO);
+						continue;
 					}
 
 					if (currSubmenu == 1) { //Load game
 						this->TypeMenu = 2;
 						return;
+					}
+
+					if (currSubmenu == 2) {
+						SetFeatures(3, ModePlay, PriorityChessMan, ColorX, ColorO);
+						this->TypeMenu = TypeMenu;
+						this->PrintMenu(currSubmenu, PriorityChessMan, ColorX, ColorO);
+						continue;
 					}
 
 					if (currSubmenu == 4) {
@@ -277,6 +459,10 @@ void MainScreen::SetFeatures(int TypeMenu, string& ModePlay){
 					return;
 				}
 
+				if (TypeMenu == 3) {
+					if (HandleOptionMenu(currSubmenu, PriorityChessMan, ColorX, ColorO))
+						return;
+				}
 			}
 		}
 		

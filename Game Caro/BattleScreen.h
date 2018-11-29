@@ -19,6 +19,9 @@ class BattleScreen {
 		int NumberOfChessManX;
 		int NumberOfChessManO;
 		string ModePlay;
+		char PriorityChessMan;
+		int ColorX;
+		int ColorO;
 		string UtilityKey;
 	private:
 		void PrintTime();
@@ -30,7 +33,7 @@ class BattleScreen {
 	public:
 		void LoadGame(string&);
 	    bool Loop;
-		BattleScreen(int, string);
+		BattleScreen(int, string, char, int ,int);
 		string getUtilityKey() { return UtilityKey; }
 		void drawGUI(string);
 		void startBattle(string);

@@ -20,5 +20,5 @@ class AI {
 		int getBestRow() { return BestRow; }
 		int getBestCol() { return BestCol; }
 		void findBestMove(CellofBoard**, int);
-		void Go(CellofBoard** &, int&);
+		void Go(CellofBoard** &, int&, int, int);
 };

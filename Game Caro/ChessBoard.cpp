@@ -19,7 +19,7 @@ ChessBoard::~ChessBoard() {
 	delete[] pBoard;
 }
 
-void ChessBoard::resetBoard(string ResetMode) {
+void ChessBoard::resetBoard(string ResetMode, int ColorX, int ColorO) {
 	if (size == 0)
 		return;
 	for(int i = 0; i < size; i++)
@@ -32,13 +32,13 @@ void ChessBoard::resetBoard(string ResetMode) {
 				Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
 				printf_s(" ");
 			}
-			else {
+			else if (ResetMode == "Load game"){
 				Graphics::gotoXY(UpperLeftCornerX + 4 * j + 2, UpperLeftCornerY + 2 * i + 1);
 				
 				if (pBoard[i][j].getChessMan() == 'X')
-					Graphics::SetColor(10);
+					Graphics::SetColor(ColorX);
 				else
-					Graphics::SetColor(12);
+					Graphics::SetColor(ColorO);
 
 				printf_s("%c", pBoard[i][j].getChessMan());
 			}
@@ -81,7 +81,7 @@ void ChessBoard::drawBoard() {
 	printf_s("%c%c%c%c", 196, 196, 196, 217);
 }
 
-bool ChessBoard::setStateOfBoard(int CursorX, int CursorY, char turn) {
+bool ChessBoard::setStateOfBoard(int CursorX, int CursorY, char turn, int ColorX, int ColorO) {
 	for(int i = 0; i < size; i++)
 		for (int j = 0; j < size; j++) {
 			int x1 = pBoard[i][j].getX();
@@ -96,14 +96,14 @@ bool ChessBoard::setStateOfBoard(int CursorX, int CursorY, char turn) {
 
 				if (turn == 'X') {
 					pBoard[i][j].setChessMan('X');
-					Graphics::SetColor(10);
+					Graphics::SetColor(ColorX);
 					printf_s("X");
 					AmountChessMan++;
 					return true;
 				}
 				else {
 					pBoard[i][j].setChessMan('O');
-					Graphics::SetColor(12);
+					Graphics::SetColor(ColorO);
 					printf_s("O");
 					AmountChessMan++;
 					return true; 

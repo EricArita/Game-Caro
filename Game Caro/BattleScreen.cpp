@@ -11,7 +11,7 @@
 #include <string>
 using namespace std;
 
-BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay) {
+BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay, char PriorityChessMan, int ColorX, int ColorO) {
 	Graphics::getConsoleScreenSize();
 	ScreenColumns = Graphics::ConsoleScreenColumns;
 	ScreenRows = Graphics::ConsoleScreenRows;
@@ -19,6 +19,9 @@ BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay) {
 	int x = (ScreenColumns - 41) / 2 - (4 * ChessBoardSize + 1) / 2 - 6;
 	board = new ChessBoard(ChessBoardSize, x, 6);	
 	this->ModePlay = ModePlay;
+	this->PriorityChessMan = PriorityChessMan;
+	this->ColorX = ColorX;
+	this->ColorO = ColorO;
 	this->Loop = true;
 	this->Stop = false;
 }
@@ -100,11 +103,11 @@ void BattleScreen::drawGUI(string StartMode) {
 		Graphics::gotoXY(ScreenColumns - 27, 14);
 		cout << "P1         P2"; // 9 blank space
 		Graphics::gotoXY(ScreenColumns - 27, 15);
-		Graphics::SetColor(10);
+		Graphics::SetColor(this->ColorX);
 		cout << this->NumberOfWinsOfPlayer;
 		Graphics::SetColor(15);
 		cout << "    :     ";
-		Graphics::SetColor(12);
+		Graphics::SetColor(this->ColorO);
 		cout << this->NumberOfWinsOfComputer;
 
 		/*
@@ -148,13 +151,13 @@ void BattleScreen::drawGUI(string StartMode) {
 	Graphics::gotoXY(ScreenColumns - 28, 21);
 	cout << "X - ";
 
-	Graphics::SetColor(10);
+	Graphics::SetColor(this->ColorX);
 	cout << this->NumberOfChessManX;
 
 	Graphics::SetColor(15);
 	this->NumberOfChessManX > 9 ? cout << " :  O - " : cout << "  :  O - ";
 
-	Graphics::SetColor(12);
+	Graphics::SetColor(this->ColorO);
 	cout << this->NumberOfChessManO << "  ";
 	
 	board->drawBoard();
@@ -206,17 +209,19 @@ void BattleScreen::getControlFromPlayer() {
 			}
 
 			if (GetAsyncKeyState(VK_RETURN)) { //press Enter
-				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn)) {
+				if (board->setStateOfBoard(CurrCursorX, CurrCursorY, Turn, this->ColorX, this->ColorO)) {
 					Graphics::VisibleCursor(false);
 
 					if (Turn == 'X') {
 						this->NumberOfChessManX++;
 						Graphics::gotoXY(ScreenColumns - 24, 21);
+						Graphics::SetColor(this->ColorX);
 						cout << this->NumberOfChessManX;
 					}
 					else {
 						this->NumberOfChessManO++;
 						Graphics::gotoXY(ScreenColumns - 14, 21);
+						Graphics::SetColor(this->ColorO);
 						cout << this->NumberOfChessManO;
 					}
 
@@ -588,16 +593,16 @@ void BattleScreen::checkCurrentState(int currRow, int currColumn){
 }
 
 void BattleScreen::changeTurn() {
-	Graphics::gotoXY((ScreenColumns - 41) / 2 - 9, 4);
+	Graphics::gotoXY((ScreenColumns - 41) / 2 - 8, 4);
 	Graphics::SetColor(12);
 	
 	if (Turn == 'X') {
-		Graphics::SetColor(12);
+		Graphics::SetColor(this->ColorO);
 		cout << "O";
 		Turn = 'O';
 	}
 	else {
-		Graphics::SetColor(10);
+		Graphics::SetColor(this->ColorX);
 		cout << "X";
 		Turn = 'X';
 	}
@@ -753,15 +758,16 @@ void BattleScreen::startBattle(string StartMode) {
 	*/
 
 	if (StartMode == "New game") {
-		board->resetBoard("New game");
-		this->Turn = 'X';
+		board->resetBoard("New game", this->ColorX, this->ColorO);
+		this->Turn = this->PriorityChessMan;
 	}
-	else
-		board->resetBoard("Load game");
+	else if (StartMode == "Load game")
+		board->resetBoard("Load game", this->ColorX, this->ColorO);
 
 	while (true) { //Blinking effect
 		 Graphics::VisibleCursor(false);
 		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
+		 Graphics::Blink((ScreenColumns - 41) / 2 - 19, 3, "     ");
 
 		 PrintTime();
 
@@ -797,11 +803,19 @@ void BattleScreen::startBattle(string StartMode) {
 
 	Graphics::gotoXY((ScreenColumns - 41) / 2 - 12, 4);
 	Graphics::SetColor(15);
-	cout << "--";
-	Graphics::SetColor(12);
-	Turn == 'X' ? cout << " X " : cout << " O ";
+	cout << "--- ";
+
+	if (Turn == 'X') {
+		Graphics::SetColor(this->ColorX);
+		cout << "X";
+	}
+	else {
+		Graphics::SetColor(this->ColorO);
+		cout << "O";
+	}
+
 	Graphics::SetColor(15);
-	cout << "--";
+	cout << " ---";
 
 	CurrCursorX = board->getXAtCell(9, 9) + 2;
 	CurrCursorY = board->getYAtCell(9, 9) + 1;
@@ -841,20 +855,28 @@ void BattleScreen::startBattle(string StartMode) {
 			else {
 				computer->findBestMove(board->getpBoard(), board->getSize());
 
-				int BestRow = computer->getBestRow();
-				int BestCol = computer->getBestCol();
+				int BestRow, BestCol;
 
-				computer->Go(board->getpBoard(), this->NumberOfChessManO);
+				if (this->NumberOfChessManX == 0) {
+					BestRow = 11;
+					BestCol = 11;
+				}
+				else {
+				    BestRow = computer->getBestRow();
+					BestCol = computer->getBestCol();
+				}
+
+				computer->Go(board->getpBoard(), this->NumberOfChessManO, this->NumberOfChessManX, this->ColorO);
 				this->CurrCursorX = board->getXAtCell(BestRow, BestCol) + 2;
 				this->CurrCursorY = board->getYAtCell(BestRow, BestCol) + 1;
 
 				board->setAmountChessMan(board->getAmountChessMan() + 1);
 
-				this->checkCurrentState(BestRow, BestCol);
+				this->checkCurrentState(BestRow, BestCol);			
 			}
 
 			this->changeTurn();
-			Sleep(50);
+			Sleep(30);
 		}
 
 		delete computer;
@@ -870,25 +892,25 @@ void BattleScreen::finishBattle() {
 	if (this->Result == 'W') {
 		Graphics::gotoXY(ScreenColumns - 27, 15);
 		this->NumberOfWinsOfPlayer++;
-		Graphics::SetColor(10);
+		Graphics::SetColor(this->ColorX);
 		cout << this->NumberOfWinsOfPlayer;
 	}
 	else {
 		if (this->Result == 'L') {
 			Graphics::gotoXY(ScreenColumns - 16, 15);
 			this->NumberOfWinsOfComputer++;
-			Graphics::SetColor(12);
+			Graphics::SetColor(this->ColorO);
 			cout << this->NumberOfWinsOfComputer;
 		}
 		else if (this->Result == 'D') {
 			Graphics::gotoXY(ScreenColumns - 27, 15);
 			this->NumberOfWinsOfPlayer++;
-			Graphics::SetColor(10);
+			Graphics::SetColor(this->ColorX);
 			cout << this->NumberOfWinsOfPlayer;
 
 			Graphics::gotoXY(ScreenColumns - 16, 15);
 			this->NumberOfWinsOfComputer++;
-			Graphics::SetColor(12);
+			Graphics::SetColor(this->ColorO);
 			cout << this->NumberOfWinsOfComputer;
 		}
 	}

@@ -7,6 +7,8 @@ class GameCaro {
 		//All game settings attributes
 		string ModePlay;
 		char PriorityChessMan;
+		int ColorOfX;
+		int ColorOfO;
 	private:
 		void InfoOfAuthor();
 	public:

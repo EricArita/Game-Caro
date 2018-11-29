@@ -21,7 +21,7 @@ class ChessBoard {
 	public:
 		ChessBoard(int, int, int);
 		~ChessBoard();
-		void resetBoard(std::string);
+		void resetBoard(std::string, int, int);
 		void drawBoard();
-		bool setStateOfBoard(int, int, char);
+		bool setStateOfBoard(int, int, char, int, int);
 };

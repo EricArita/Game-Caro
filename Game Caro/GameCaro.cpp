@@ -54,13 +54,15 @@ void GameCaro::InfoOfAuthor() {
 
 GameCaro::GameCaro(){
 	Graphics::SetFullConsoleScreen();
-
 	this->PriorityChessMan = 'X';
+	this->ColorOfX = 10;//Light Green
+	this->ColorOfO = 12; //Light Red
+	this->ModePlay = " ";
 
 	while (true) {
 		MainScreen* scrMain = new MainScreen();
 		scrMain->PrintTitle();
-		scrMain->SetFeatures(0, this->ModePlay);
+		scrMain->SetFeatures(0, this->ModePlay, this->PriorityChessMan, this->ColorOfX, this->ColorOfO);
 		int TypeMenu = scrMain->getTypeMenu();
 
 		if (TypeMenu == 1) { //New Game
@@ -70,7 +72,7 @@ GameCaro::GameCaro(){
 				continue;
 			}
 
-			BattleScreen* scrBattle = new BattleScreen(20, this->ModePlay); //Size of chessboard is 20x20
+			BattleScreen* scrBattle = new BattleScreen(20, this->ModePlay, this->PriorityChessMan, this->ColorOfX, this->ColorOfO); //Size of chessboard is 20x20
 			system("cls");
 
 			while (scrBattle->Loop)
@@ -109,7 +111,7 @@ GameCaro::GameCaro(){
 		}
 
 		if (TypeMenu == 2) { //Load game
-			BattleScreen* scrBattle = new BattleScreen(20, " ");
+			BattleScreen* scrBattle = new BattleScreen(20, " ", this->PriorityChessMan, this->ColorOfX, this->ColorOfO);
 			scrBattle->LoadGame(this->ModePlay);
 			system("cls");
 			int cntLoop = -1;
