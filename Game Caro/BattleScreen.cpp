@@ -1,14 +1,18 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "BattleScreen.h"
 #include "Graphics.h"
 #include "ArtificialIntelligence.h"
 #include "Windows.h"
 #include "CellofBoard.h"
 #include "Time.h"
+#include <ctime>
 #include <conio.h>
 #include <stdio.h>
 #include <thread>
+#include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 BattleScreen::BattleScreen(int ChessBoardSize, string ModePlay, char PriorityChessMan, int ColorX, int ColorO) {
@@ -701,48 +705,137 @@ void BattleScreen::AskPlayer() {
 }
 
 void BattleScreen::SaveGame() {
-	FILE* fwriter;
-	fopen_s(&fwriter,"SaveGameState.txt", "w");
+	ofstream fwriter1, fwriter2;
+	fwriter1.open("SaveGameState.txt", ios::app);
+	fwriter2.open("SaveDateOfGame.txt", ios::app);
 
-	fprintf(fwriter, "%c %d %d %d %d %s\n", this->Turn, this->NumberOfChessManX, this->NumberOfChessManO, this->NumberOfWinsOfPlayer, this->NumberOfWinsOfComputer, this->ModePlay.c_str());
+	time_t t = time(0);
+	tm* currTime = localtime(&t);
+	
+	fwriter2 << currTime->tm_mday << "/" << currTime->tm_mon + 1 << "/" << currTime->tm_year + 1900 << " ";
+	if (currTime->tm_hour <= 9)
+		fwriter2 << "0" << currTime->tm_hour << ":";
+	else
+		fwriter2 << currTime->tm_hour << ":";
+
+	if (currTime->tm_min <= 9)
+		fwriter2 << "0" << currTime->tm_min << "\n";
+	else
+		fwriter2 << currTime->tm_min << "\n";
+
+	fwriter1 << this->Turn << " " << this->NumberOfChessManX << " " << this->NumberOfChessManO << " " << this->NumberOfWinsOfPlayer << " " << this->NumberOfWinsOfComputer << " " << this->ModePlay << endl;
 	
 	CellofBoard** pBoard = this->board->getpBoard();
 	int n = this->board->getSize();
 
 	for (int i = 0; i < n; i++){
 		for (int j = 0; j < n; j++)
-			fprintf(fwriter, "%c", pBoard[i][j].getChessMan());
+			fwriter1 << pBoard[i][j].getChessMan();
 
-		fprintf(fwriter, "\n");
+		fwriter1 << endl;
 	}
 
-	fclose(fwriter);
+	fwriter1.close();
+	fwriter2.close();
 }
 
 void BattleScreen::LoadGame(string &ModePlay) {
-	FILE* freader;
-	freopen_s(&freader, "SaveGameState.txt", "r", stdin);
+	ifstream freader1, freader2;
+	freader1.open("SaveDateOfGame.txt", ios::in);
+	freader2.open("SaveGameState.txt", ios::in);
 
-	//if (fopen_s(&freader, "SaveGameState.txt", "r") == NULL) {
-	cin >> this->Turn >> this->NumberOfChessManX >> this->NumberOfChessManO >> this->NumberOfWinsOfPlayer >> this->NumberOfWinsOfComputer;
-	cin.ignore();
-	getline(cin, ModePlay);
-	this->ModePlay = ModePlay;
-
-	CellofBoard** pBoard = board->getpBoard();
-	int n = board->getSize();
-
+	vector<string> date;
 	string s;
-	for (int i = 0; i < n; i++){
-		getline(cin, s);
 
-		for (int j = 0; j < n; j++) 
-			pBoard[i][j].setChessMan(s[j]);
+	while (getline(freader1, s))
+	{
+		date.push_back(s);
+	}
+	freader1.close();
+
+	system("cls");
+	
+	for (int i = 0; i < date.size(); i++) {
+		if (i == 0)
+			Graphics::SetColor(12);
+		else
+			Graphics::SetColor(14);
+
+		Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+
+		cout << ">> " << date[i];
 	}
 
-	fclose(freader);
-	
-	//}
+	int CurrPositionData = 0;
+	int SizeOfData = date.size();
+
+	while (true)
+	{
+		_getch();
+
+		if (_kbhit()) {
+			if (GetAsyncKeyState(VK_DOWN)) {
+				CurrPositionData++;
+				if (CurrPositionData == SizeOfData)
+					CurrPositionData = 0;
+
+				for (int i = 0; i < date.size(); i++) {
+					Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+
+					if (i == CurrPositionData)
+						Graphics::SetColor(12);
+					else
+						Graphics::SetColor(14);
+
+					cout << ">> " << date[i];
+				}
+				Sleep(200);
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_UP)) {
+				CurrPositionData--;
+				if (CurrPositionData == -1)
+					CurrPositionData = SizeOfData - 1;
+
+				for (int i = 0; i < date.size(); i++) {
+					Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+
+					if (i == CurrPositionData)
+						Graphics::SetColor(12);
+					else
+						Graphics::SetColor(14);
+
+					cout << ">> " << date[i];
+				}
+				Sleep(200);
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_RETURN)) {
+				freader2.seekg(430 * CurrPositionData, ios::beg);
+
+				freader2 >> this->Turn >> this->NumberOfChessManX >> this->NumberOfChessManO >> this->NumberOfWinsOfPlayer >> this->NumberOfWinsOfComputer;
+				freader2.ignore();
+				getline(freader2, ModePlay);
+				this->ModePlay = ModePlay;
+
+				CellofBoard** pBoard = board->getpBoard();
+				int n = board->getSize();
+
+				string s;
+				for (int i = 0; i < n; i++) {
+					getline(freader2, s);
+
+					for (int j = 0; j < n; j++)
+						pBoard[i][j].setChessMan(s[j]);
+				}
+
+				freader2.close();
+				return;
+			}
+		}
+	}
 
 }
 
@@ -764,10 +857,10 @@ void BattleScreen::startBattle(string StartMode) {
 	else if (StartMode == "Load game")
 		board->resetBoard("Load game", this->ColorX, this->ColorO);
 
+	Graphics::Blink((ScreenColumns - 41) / 2 - 12, 4, "                    ");
 	while (true) { //Blinking effect
 		 Graphics::VisibleCursor(false);
 		 Graphics::Blink((ScreenColumns - 41) / 2 - 25, 3, "     NHAN PHIM SPACE DE BAT DAU            ");
-		 Graphics::Blink((ScreenColumns - 41) / 2 - 19, 3, "     ");
 
 		 PrintTime();
 
@@ -838,7 +931,7 @@ void BattleScreen::startBattle(string StartMode) {
 			this->changeTurn();
 		}
 	}
-	else if (ModePlay == "Player vs Computer") {
+	else if (ModePlay == "Player vs Laptop") {
 		AI* computer = new AI();
 
 		while (!this->Stop) //Loop until finishing the match

@@ -409,11 +409,10 @@ void MainScreen::SetFeatures(int TypeMenu, string &ModePlay, char &PriorityChess
 				continue;
 			}
 
-
-
 			if (GetAsyncKeyState(VK_RETURN)) {
 				if (TypeMenu == 0) {
 					if (currSubmenu == 0) { //New game
+
 						SetFeatures(1, ModePlay, PriorityChessMan, ColorX, ColorO);
 
 						if (ModePlay != " ")
@@ -452,7 +451,7 @@ void MainScreen::SetFeatures(int TypeMenu, string &ModePlay, char &PriorityChess
 					if (currSubmenu == 0)
 						ModePlay = "Player vs Player";
 					else if (currSubmenu == 1)
-						ModePlay = "Player vs Computer";
+						ModePlay = "Player vs Laptop";
 					else
 						ModePlay = " "; // back
 

@@ -1,17 +1,80 @@
-X 18 18 3 1 Player vs Computer
+O 13 12 0 0 Player vs Player
+          XO        
+           X        
+           O        
+           X        
+       O   O        
+       X   X        
+       XOXOOX       
+       O OX         
+     OXXOXO         
+         X          
                     
                     
                     
                     
-            X       
-         O O        
-       OX O         
-     O X O O        
-    O XXOXX         
-     X XOXX         
-    O XOXX          
-       XOX          
-      OXOOOOX       
+                    
+                    
+                    
+                    
+                    
+                    
+X 4 4 0 0 Player vs Laptop
+                    
+                    
+                    
+                    
+                    
+                    
+          O         
+        XOX         
+        O           
+      XO X          
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+X 10 10 0 0 Player vs Laptop
+                    
+                    
+                    
+                    
+                    
+                    
+    X     X         
+     O  XO          
+     XO O           
+       OXX          
+    XOOOOX          
+     X   X          
+         O          
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+X 3 3 0 1 Player vs Laptop
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+        XO          
+        O           
+       O X          
+      X             
+                    
+                    
                     
                     
                     

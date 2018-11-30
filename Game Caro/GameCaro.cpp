@@ -55,8 +55,8 @@ void GameCaro::InfoOfAuthor() {
 GameCaro::GameCaro(){
 	Graphics::SetFullConsoleScreen();
 	this->PriorityChessMan = 'X';
-	this->ColorOfX = 10;//Light Green
-	this->ColorOfO = 12; //Light Red
+	this->ColorOfX = 10; //Default color for X is Light Green
+	this->ColorOfO = 12; //Default color for O is Light Red
 	this->ModePlay = " ";
 
 	while (true) {
