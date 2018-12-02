@@ -19,7 +19,17 @@ void Time::PrintTime(int PosTimeX, int PosTimeY) {
 	tm* currTime = localtime(&t);
 
 	Graphics::gotoXY(PosTimeX - 1, PosTimeY + 4);
-	cout << currTime->tm_mday << "/" << currTime->tm_mon + 1 << "/" << currTime->tm_year + 1900;
+	if (currTime->tm_mday <= 9)
+		cout << "0" << currTime->tm_mday << "/";
+	else
+		cout << currTime->tm_mday << "/";
+
+	if (currTime->tm_mon + 1 <= 9)
+		cout << "0" << currTime->tm_mon + 1 << "/";
+	else
+		cout << currTime->tm_mon + 1 << "/";
+
+	cout << currTime->tm_year + 1900;
 	
 	t = time(0);
 	currTime = localtime(&t);

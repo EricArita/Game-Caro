@@ -59,15 +59,16 @@ GameCaro::GameCaro(){
 	this->ColorOfO = 12; //Default color for O is Light Red
 	this->ModePlay = " ";
 
+	MainScreen* scrMain = new MainScreen();
+	int TypeMenu = -1;
+
 	while (true) {
-		MainScreen* scrMain = new MainScreen();
 		scrMain->PrintTitle();
 		scrMain->SetFeatures(0, this->ModePlay, this->PriorityChessMan, this->ColorOfX, this->ColorOfO);
-		int TypeMenu = scrMain->getTypeMenu();
+		TypeMenu = scrMain->getTypeMenu();
 
 		if (TypeMenu == 1) { //New Game
 			if (this->ModePlay == " ") { //Back
-				delete scrMain;
 				system("cls");
 				continue;
 			}
@@ -105,7 +106,6 @@ GameCaro::GameCaro(){
 			}	
 
 			delete scrBattle;
-			delete scrMain;
 			system("cls");		
 			continue;
 		}
@@ -113,6 +113,12 @@ GameCaro::GameCaro(){
 		if (TypeMenu == 2) { //Load game
 			BattleScreen* scrBattle = new BattleScreen(20, " ", this->PriorityChessMan, this->ColorOfX, this->ColorOfO);
 			scrBattle->LoadGame(this->ModePlay);
+
+			if (this->ModePlay == " ") { // user presses back to return main menu instead of selecting and loading game	
+				system("cls");
+				continue;
+			}
+
 			system("cls");
 			int cntLoop = -1;
 
@@ -130,8 +136,10 @@ GameCaro::GameCaro(){
 				
 
 				if (!scrBattle->Loop) {
-					if (scrBattle->getUtilityKey() == "esc")
+					if (scrBattle->getUtilityKey() == "esc") {
+						delete scrMain;
 						return;
+					}
 
 					if (scrBattle->getUtilityKey() == "backspace")
 						break;
@@ -143,8 +151,10 @@ GameCaro::GameCaro(){
 				}
 
 				if (!scrBattle->Loop) {
-					if (scrBattle->getUtilityKey() == "esc")
+					if (scrBattle->getUtilityKey() == "esc") {
+						delete scrMain;
 						return;
+					}
 
 					if (scrBattle->getUtilityKey() == "backspace")
 						break;
@@ -154,7 +164,6 @@ GameCaro::GameCaro(){
 			}
 
 			delete scrBattle;
-			delete scrMain;
 			system("cls");
 			Sleep(20);
 			continue;
@@ -162,9 +171,11 @@ GameCaro::GameCaro(){
 
 		if (TypeMenu == 5) {
 			InfoOfAuthor();
+			system("cls");
 		}
 
 		if (TypeMenu == 6) { //Exit
+			delete scrMain;
 			return;
 		}
 

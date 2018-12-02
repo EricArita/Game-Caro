@@ -706,13 +706,24 @@ void BattleScreen::AskPlayer() {
 
 void BattleScreen::SaveGame() {
 	ofstream fwriter1, fwriter2;
-	fwriter1.open("SaveGameState.txt", ios::app);
 	fwriter2.open("SaveDateOfGame.txt", ios::app);
+	fwriter1.open("SaveGameState.txt", ios::app);
 
 	time_t t = time(0);
 	tm* currTime = localtime(&t);
 	
-	fwriter2 << currTime->tm_mday << "/" << currTime->tm_mon + 1 << "/" << currTime->tm_year + 1900 << " ";
+	if (currTime->tm_mday <= 9)
+		fwriter2 << "0" << currTime->tm_mday << "/";
+	else
+		fwriter2 << currTime->tm_mday << "/";
+
+	if (currTime->tm_mon + 1 <= 9)
+		fwriter2 << "0" << currTime->tm_mon + 1 << "/";
+	else
+		fwriter2 << currTime->tm_mon + 1<< "/";
+
+	fwriter2 << currTime->tm_year + 1900 << " ";
+	
 	if (currTime->tm_hour <= 9)
 		fwriter2 << "0" << currTime->tm_hour << ":";
 	else
@@ -729,8 +740,10 @@ void BattleScreen::SaveGame() {
 	int n = this->board->getSize();
 
 	for (int i = 0; i < n; i++){
-		for (int j = 0; j < n; j++)
-			fwriter1 << pBoard[i][j].getChessMan();
+		for (int j = 0; j < n; j++) {
+			char c = pBoard[i][j].getChessMan();
+			fwriter1 << c;
+		}
 
 		fwriter1 << endl;
 	}
@@ -744,6 +757,16 @@ void BattleScreen::LoadGame(string &ModePlay) {
 	freader1.open("SaveDateOfGame.txt", ios::in);
 	freader2.open("SaveGameState.txt", ios::in);
 
+	/*//freader2.clear();
+	freader2.seekg(2, ios::beg);
+	//freader2.clear();
+	int a;
+	freader2 >> a;
+	cout << a;
+
+	freader1.close();
+	freader2.close();*/
+
 	vector<string> date;
 	string s;
 
@@ -751,9 +774,14 @@ void BattleScreen::LoadGame(string &ModePlay) {
 	{
 		date.push_back(s);
 	}
+	date.push_back("Back");
 	freader1.close();
 
 	system("cls");
+
+	Graphics::SetColor(10);
+	Graphics::gotoXY(ScreenColumns / 2 - 14, ScreenRows / 2 - 9);
+	cout << "LOAD GAME: ";
 	
 	for (int i = 0; i < date.size(); i++) {
 		if (i == 0)
@@ -761,7 +789,7 @@ void BattleScreen::LoadGame(string &ModePlay) {
 		else
 			Graphics::SetColor(14);
 
-		Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+		Graphics::gotoXY(ScreenColumns / 2 - 10, ScreenRows / 2 + i - 7);
 
 		cout << ">> " << date[i];
 	}
@@ -780,7 +808,7 @@ void BattleScreen::LoadGame(string &ModePlay) {
 					CurrPositionData = 0;
 
 				for (int i = 0; i < date.size(); i++) {
-					Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+					Graphics::gotoXY(ScreenColumns / 2 - 10, ScreenRows / 2 + i - 7);
 
 					if (i == CurrPositionData)
 						Graphics::SetColor(12);
@@ -799,7 +827,7 @@ void BattleScreen::LoadGame(string &ModePlay) {
 					CurrPositionData = SizeOfData - 1;
 
 				for (int i = 0; i < date.size(); i++) {
-					Graphics::gotoXY(ScreenColumns / 2, ScreenRows / 2 + i - 5);
+					Graphics::gotoXY(ScreenColumns / 2 - 10, ScreenRows / 2 + i - 7);
 
 					if (i == CurrPositionData)
 						Graphics::SetColor(12);
@@ -813,30 +841,32 @@ void BattleScreen::LoadGame(string &ModePlay) {
 			}
 
 			if (GetAsyncKeyState(VK_RETURN)) {
-				freader2.seekg(430 * CurrPositionData, ios::beg);
+				if (CurrPositionData == SizeOfData - 1)  //Press Back
+						return;			
 
-				freader2 >> this->Turn >> this->NumberOfChessManX >> this->NumberOfChessManO >> this->NumberOfWinsOfPlayer >> this->NumberOfWinsOfComputer;
-				freader2.ignore();
-				getline(freader2, ModePlay);
-				this->ModePlay = ModePlay;
+				for (int i = 0; i <= CurrPositionData; i++) {
+					freader2 >> this->Turn >> this->NumberOfChessManX >> this->NumberOfChessManO >> this->NumberOfWinsOfPlayer >> this->NumberOfWinsOfComputer;
+					freader2.ignore();
+					getline(freader2, ModePlay);
 
-				CellofBoard** pBoard = board->getpBoard();
-				int n = board->getSize();
+					this->ModePlay = ModePlay;
 
-				string s;
-				for (int i = 0; i < n; i++) {
-					getline(freader2, s);
+					CellofBoard** pBoard = board->getpBoard();
+					int n = board->getSize();
 
-					for (int j = 0; j < n; j++)
-						pBoard[i][j].setChessMan(s[j]);
+					string s;
+					for (int i = 0; i < n; i++) {
+						getline(freader2, s);
+
+						for (int j = 0; j < n; j++)
+								pBoard[i][j].setChessMan(s[j]);
+					}
 				}
-
 				freader2.close();
 				return;
 			}
 		}
 	}
-
 }
 
 void BattleScreen::PrintTime() {

@@ -21,6 +21,7 @@ void MainScreen::PrintTitle(){
 	int initX = (ScreenColumns - 74) / 2 + 8; //coordinate X to start printing title
 	int initY = 6; //coordinate Y to start printing title
 	Graphics::SetColor(10);
+	Graphics::VisibleCursor(false);
 
 	/*
 		print 'C'
@@ -63,7 +64,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX, initY + 15);
 	printf_s("CCCCCCCCCCCCC");
 
-	Sleep(700);
+	Sleep(600);
 
 	/*
 		print 'A'
@@ -106,7 +107,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX, initY + 11);
 	printf_s("aaaaaaaaaa  aaaa");
 
-	Sleep(700);
+	Sleep(600);
 
 	/*
 		print 'R'
@@ -139,7 +140,7 @@ void MainScreen::PrintTitle(){
 	Graphics::gotoXY(initX + 1, initY + 11);
 	printf_s("rrrrrrr");
 
-	Sleep(700);
+	Sleep(600);
 
 	/*
 		print 'O'

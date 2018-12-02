@@ -1,14 +1,119 @@
-O 13 12 0 0 Player vs Player
-          XO        
-           X        
+X 23 23 1 0 Player vs Laptop
+                    
+                    
+                    
+     X              
+      O O O         
+       O XX         
+        OOXOO       
+        XOXX        
+        OXXXXO      
+       OXXOXXO  O   
+      XXXOXOXXXO    
+      OO    O O     
+             O      
+              X     
+                    
+                    
+                    
+                    
+                    
+                    
+X 28 28 0 0 Player vs Player
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+        OXOOX       
+     XOOXOXXO       
+     OXXXXOOXX      
+     XXOOXOXOO      
+       O     X      
+     O X            
+     XXO     O      
+     OOX     X      
+     O       O      
+     X       X      
+             O      
+     O       X      
+     X OXO XO       
+X 6 6 0 0 Player vs Laptop
+                    
+                    
+                    
+                    
+            X       
            O        
-           X        
-       O   O        
-       X   X        
-       XOXOOX       
-       O OX         
-     OXXOXO         
-         X          
+       O  OX        
+        XO          
+        OX          
+       XOX          
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+X 9 9 0 0 Player vs Laptop
+                    
+                    
+                    
+                    
+                    
+                    
+       O O          
+       OXXXO        
+       XOXX         
+       O XX         
+      O  O          
+     O              
+    X               
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+X 19 19 2 4 Player vs Laptop
+                    
+                    
+               X    
+     XXOX    XO     
+      O  O X O      
+     XOO XOOOX      
+      O O XO        
+      O XOXOX       
+      X OXX         
+       O XOX        
+      X             
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+X 16 16 0 0 Player vs Player
+                    
+                    
+                    
+          OO        
+       OXXXXO       
+        XOO         
+       XXOX         
+   XOXOXOXO         
+    O XOXOX         
+     O   XO         
                     
                     
                     
@@ -26,51 +131,9 @@ X 4 4 0 0 Player vs Laptop
                     
                     
                     
-          O         
-        XOX         
-        O           
-      XO X          
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-X 10 10 0 0 Player vs Laptop
-                    
-                    
-                    
-                    
-                    
-                    
-    X     X         
-     O  XO          
-     XO O           
-       OXX          
-    XOOOOX          
-     X   X          
+        O X         
          O          
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-X 3 3 0 1 Player vs Laptop
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-        XO          
-        O           
+        OX          
        O X          
       X             
                     
